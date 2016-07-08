@@ -1,4 +1,4 @@
-[![Oniri Logo](http://oniri.prime-radiants.com/images/oniri-logo.png)]
+![Oniri Logo](http://oniri.prime-radiants.com/images/oniri-logo.png)
 
 # Oniri API
 
