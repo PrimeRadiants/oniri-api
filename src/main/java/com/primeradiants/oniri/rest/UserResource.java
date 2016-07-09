@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
  * @author Shanira
  * @since 0.1.0
  */
-@Path("/user")
+@Path("/rest/user")
 public class UserResource {
 
 	private static final String USERNAME = "username";
