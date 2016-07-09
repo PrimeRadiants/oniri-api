@@ -25,11 +25,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     UserDetailsService userDetailsService;
 	
 	@Autowired
-	public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
-		auth
-		.inMemoryAuthentication()
-			.withUser("user").password("password").roles("USER","ADMIN");
-		
+	public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {		
 		//Database users retrieved with Hibernate
 		auth.userDetailsService(userDetailsService);
 		auth.authenticationProvider(authenticationProvider());

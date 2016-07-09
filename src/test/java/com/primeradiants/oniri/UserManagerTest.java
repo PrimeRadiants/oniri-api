@@ -2,6 +2,9 @@ package com.primeradiants.oniri;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Date;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -50,7 +53,7 @@ public class UserManagerTest {
 		logger.info("Table User cleaned : lines deleted " + deletedLines);
 		
 		// add the user to test the manager & service
-		UserEntity user = new UserEntity(0, USERNAME, EMAIL, PASSWORD);
+		UserEntity user = new UserEntity(0, USERNAME, EMAIL, PASSWORD, new Date());
 		
 		session.beginTransaction();
 		session.save(user);

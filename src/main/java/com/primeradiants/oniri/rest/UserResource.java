@@ -1,5 +1,7 @@
 package com.primeradiants.oniri.rest;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,7 +39,7 @@ public class UserResource {
 	{
 		UserDetails currentUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		UserEntity user = userManager.getUser(currentUser.getUsername());
-		return ResponseEntity.ok(new UserResponse(user.getUsername(), user.getEmail()));
+		return ResponseEntity.ok(new UserResponse(user.getUsername(), user.getEmail(), user.getCreated()));
 	}
 	
 //	/**
@@ -79,5 +81,6 @@ public class UserResource {
 	public static class UserResponse {
 		private String username;
 		private String email;
+		private Date created;
 	}
 }
