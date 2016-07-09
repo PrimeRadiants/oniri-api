@@ -4,6 +4,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Service;
 
 import com.primeradiants.hibernate.util.HibernateUtil;
 
@@ -12,6 +13,7 @@ import com.primeradiants.hibernate.util.HibernateUtil;
  * @author Shanira
  * @since 0.1.0
  */
+@Service
 public class UserManager {
 
 	private SessionFactory sessionFactory = HibernateUtil.getSessionAnnotationFactory();

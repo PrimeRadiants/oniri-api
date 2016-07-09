@@ -1,9 +1,7 @@
 package com.primeradiants.model.errors;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
@@ -13,12 +11,8 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 @AllArgsConstructor
-@XmlRootElement
+@Data
 public class ValidationError {
-	@XmlElement
 	private String field;
-	
-	@XmlElement
 	private String error;
-	
 }

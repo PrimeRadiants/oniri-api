@@ -27,6 +27,7 @@ public class UserManagerTest {
 
 	private final static String USERNAME = "gabitbol";
 	private final static String EMAIL = "george.abitbol@prime-radiants.com";
+	private final static String PASSWORD = "password";
 	
 	@BeforeClass
 	public static void initAllTests() {
@@ -49,7 +50,7 @@ public class UserManagerTest {
 		logger.info("Table User cleaned : lines deleted " + deletedLines);
 		
 		// add the user to test the manager & service
-		UserEntity user = new UserEntity(0, USERNAME, EMAIL);
+		UserEntity user = new UserEntity(0, USERNAME, EMAIL, PASSWORD);
 		
 		session.beginTransaction();
 		session.save(user);
@@ -66,6 +67,7 @@ public class UserManagerTest {
 		Assert.assertTrue(userId == user.getId());
 		Assert.assertEquals(USERNAME, user.getUsername());
 		Assert.assertEquals(EMAIL, user.getEmail());
+		Assert.assertEquals(PASSWORD, user.getPassword());
 	}
 	
 	@After

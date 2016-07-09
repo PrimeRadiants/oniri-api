@@ -3,14 +3,13 @@ package com.primeradiants.oniri.rest;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.primeradiants.model.errors.ValidationError;
 import com.primeradiants.oniri.user.UserEntity;
@@ -25,12 +24,13 @@ import lombok.NoArgsConstructor;
  * @author Shanira
  * @since 0.1.0
  */
-@Path("/rest/user")
+@RestController
+@RequestMapping("/rest/api")
 public class UserResource {
 
 	private static final String USERNAME = "username";
 	
-	private UserManager userManager = new UserManager();
+	@Autowired private UserManager userManager;
 	
 	/**
 	 * Retrieve a user by its user name
@@ -38,10 +38,8 @@ public class UserResource {
 	 * @return a {@link com.primeradiants.oniri.rest.UserResource.UserResponse} if user exists, 
 	 * 			else a Collection of {@link com.primeradiants.model.errors.ValidationError}
 	 */
-	@GET
-	@Path("/{username}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getUser(@PathParam(USERNAME) String username) 
+	@RequestMapping(value = "/user/{username}", method = RequestMethod.GET)
+	public ResponseEntity<?> getUser(@PathVariable(USERNAME) String username) 
 	{
 		final Collection<ValidationError> errors = new ArrayList<ValidationError>();
 		
@@ -50,10 +48,10 @@ public class UserResource {
 		
 		if (!errors.isEmpty())
         {
-            return Response.status(400).entity(errors).build();
+            return new ResponseEntity<Collection<ValidationError>>(errors, HttpStatus.BAD_REQUEST);
         }
 		
-		return Response.status(200).entity(new UserResponse(user.getUsername(), user.getEmail())).build();
+		return ResponseEntity.ok(new UserResponse(user.getUsername(), user.getEmail()));
 	}
 	
 	//Check if user name corresponds to an existing user in database and return the UserEntity object 
@@ -66,15 +64,11 @@ public class UserResource {
 		return user;
 	}
 	
-	@XmlRootElement
 	@AllArgsConstructor
 	@NoArgsConstructor
 	@Data
 	public static class UserResponse {
-		@XmlElement
 		private String username;
-		
-		@XmlElement
 		private String email;
 	}
 }
