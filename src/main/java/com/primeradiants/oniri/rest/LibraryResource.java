@@ -1,5 +1,7 @@
 package com.primeradiants.oniri.rest;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,10 @@ import com.primeradiants.oniri.novent.NoventEntity;
 import com.primeradiants.oniri.novent.NoventManager;
 import com.primeradiants.oniri.user.UserEntity;
 import com.primeradiants.oniri.user.UserManager;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * REST endpoints to manage a user novent library
@@ -33,8 +39,21 @@ public class LibraryResource {
 		UserEntity user = userManager.getUser(currentUser.getUsername());
 		
 		List<NoventEntity> novents = noventManager.getAllUserNovents(user);
-		return null;
+		List<NoventResponse> response = new ArrayList<NoventResponse>();
+		
+		for(NoventEntity novent : novents)
+			response.add(new NoventResponse(novent.getId(), novent.getTitle(), novent.getAuthors(), novent.getPublication()));
+		
+		return ResponseEntity.ok(response);
 	}
 	
-	
+	@AllArgsConstructor
+	@NoArgsConstructor
+	@Data
+	public static class NoventResponse {
+		private Integer id;
+		private String title;
+		private List<String> authors;
+		private Date publication;
+	}
 }
