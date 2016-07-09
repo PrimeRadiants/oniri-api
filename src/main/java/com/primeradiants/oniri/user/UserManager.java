@@ -22,7 +22,7 @@ public class UserManager {
 	/**
 	 * Returns a User based on user name.
 	 * @param username the user name of the user
-	 * @return the UserEntity object, or null if the user cannot be found including null userName.
+	 * @return the UserEntity object, or null if the user cannot be found including null user name.
 	 */
 	public UserEntity getUser(String username) {
 		if(username == null)
