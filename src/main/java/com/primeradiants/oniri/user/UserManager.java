@@ -20,12 +20,7 @@ import com.primeradiants.hibernate.util.HibernateUtil;
 @Service
 public class UserManager {
 
-	private final PasswordEncoder passwordEncoder;
-	
-	@Autowired
-	public UserManager(PasswordEncoder passwordEncoder) {
-		this.passwordEncoder = passwordEncoder;
-	}
+	@Autowired private PasswordEncoder passwordEncoder;
 	
 	private SessionFactory sessionFactory = HibernateUtil.getSessionAnnotationFactory();
 	private static final String USERNAME = "username"; 

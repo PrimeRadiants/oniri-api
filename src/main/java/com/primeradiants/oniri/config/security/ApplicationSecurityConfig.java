@@ -25,7 +25,8 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     UserDetailsService userDetailsService;
 	
 	@Autowired
-	public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {		
+	public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
+		System.out.println("configureGlobalSecurity");
 		//Database users retrieved with Hibernate
 		auth.userDetailsService(userDetailsService);
 		auth.authenticationProvider(authenticationProvider());
@@ -49,6 +50,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Order(1)
 	public static class ApiBasicAuthWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
 		protected void configure(HttpSecurity http) throws Exception {
+			System.out.println("ApiBasicAuthWebSecurityConfigurationAdapter");
 			http
 				//TODO : determine if keeping this protection or not
 				.csrf()

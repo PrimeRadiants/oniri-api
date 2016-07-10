@@ -22,6 +22,7 @@ public class HibernateUserDetailsService implements UserDetailsService {
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		System.out.println(username);
 		UserEntity user = userManager.getUser(username);
 		
 		if(user == null)
