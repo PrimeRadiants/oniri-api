@@ -25,6 +25,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * REST endpoints to deal with novents
+ * @author gbiaux
+ * @since 0.1.0
+ */
 @RestController
 @RequestMapping("/rest/api")
 public class NoventResource {
@@ -35,6 +40,28 @@ public class NoventResource {
 	private static final String ID = "id";
 	
 	/**
+	 * @api {get} /rest/api/novent/list Request list of novents in store
+	 * @apiName getStoreNoventList
+	 * @apiGroup Novent
+	 * @apiVersion 0.1.0
+	 * 
+	 * @apiSuccess {Object[]} 	novents 				List of novent in current user library.
+	 * @apiSuccess {Number} 	novents.id 				Id of the novent.
+	 * @apiSuccess {String} 	novents.title 			Novent title.
+	 * @apiSuccess {String[]} 	novents.authors 		List of the authors of the novent.
+	 * @apiSuccess {Date} 		novents.publication 	Novent publication date.
+	 * 
+	 * @apiSuccessExample Success-Response:
+	 *     HTTP/1.1 200 OK
+	 *     {
+	 *     	 "novents": [{
+	 *       	"id": 1,
+	 *       	"title": "Novent title",
+	 *       	"authors": ["George Abitbol"],
+	 *       	"publication": 1468237452
+	 *       }]
+	 *     }
+	 * 
 	 * Returns the list of all the novents in store
 	 * @return a List of {@link com.primeradiants.oniri.rest.LibraryResource.NoventResponse}.
 	 */
@@ -47,10 +74,44 @@ public class NoventResource {
 		for(NoventEntity novent : novents)
 			response.add(new NoventResponse(novent.getId(), novent.getTitle(), novent.getAuthors(), novent.getPublication()));
 		
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(new NoventListResponse(response));
 	}
 	
 	/**
+	 * @api {get} /rest/api/novent/:id Request list of novents in store
+	 * @apiName getStoreNoventList
+	 * @apiGroup Novent
+	 * @apiVersion 0.1.0
+	 * 
+	 * @apiParam {Number} id Novent unique ID.
+	 * 
+	 * @apiSuccess {Number} 	id 				Id of the novent.
+	 * @apiSuccess {String} 	title 			Novent title.
+	 * @apiSuccess {String} 	description		Novent description.
+	 * @apiSuccess {String[]} 	authors 		List of the authors of the novent.
+	 * @apiSuccess {Date} 		publication 	Novent publication date.
+	 * 
+	 * @apiSuccessExample Success-Response:
+	 *     HTTP/1.1 200 OK
+	 *     {
+	 *       "id": 1,
+	 *       "title": "Novent title",
+	 *       "description": "Novent description",
+	 *       "authors": ["George Abitbol"],
+	 *       "publication": 1468237452
+	 *     }
+	 * 
+	 * @apiError {Object[]}
+	 * @apiError {String} field Field where lies the input validation error
+	 * @apiError {String} error Error description
+	 * 
+	 * @apiErrorExample {json} Error-Response:
+	 *     HTTP/1.1 400 Bad Request
+	 *     [{
+	 *     	"field": "id"
+	 *       "error": "Unknown novent with id 1"
+	 *     }]
+	 * 
 	 * Retrieves a novent by its id
 	 * @param id the id of the novent
 	 * @return a {@link com.primeradiants.oniri.rest.LibraryResource.NoventResponse} if novent exists, 
@@ -73,6 +134,27 @@ public class NoventResource {
 	}
 	
 	/**
+	 * * @api {get} /rest/api/novent/:id Purchase a novent for the current user
+	 * @apiName purchaseNovent
+	 * @apiGroup Novent
+	 * @apiVersion 0.1.0
+	 * 
+	 * @apiParam {Number} id Novent unique ID.
+	 * 
+	 * @apiSuccessExample {json} Success-Response:
+	 *     HTTP/1.1 200 OK
+	 * 
+	 * @apiError {Object[]}
+	 * @apiError {String} field Field where lies the input validation error
+	 * @apiError {String} error Error description
+	 * 
+	 * @apiErrorExample {json} Error-Response:
+	 *     HTTP/1.1 400 Bad Request
+	 *     [{
+	 *     	"field": "id"
+	 *       "error": "Unknown novent with id 1"
+	 *     }]
+	 * 
 	 * Create an own link between a user and a novent
 	 * @param id the id of the novent
 	 * @return a {@link com.primeradiants.oniri.rest.LibraryResource.NoventResponse} if novent exists, 
@@ -105,6 +187,13 @@ public class NoventResource {
 			errors.add(new ValidationError(ID, "Unknown novent with id " + id));
 		
 		return novent;
+	}
+	
+	@AllArgsConstructor
+	@NoArgsConstructor
+	@Data
+	public static class NoventListResponse {
+		private List<NoventResponse> novents;
 	}
 	
 	/**

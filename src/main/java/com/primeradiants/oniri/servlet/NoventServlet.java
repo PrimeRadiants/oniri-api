@@ -26,6 +26,11 @@ import com.primeradiants.oniri.novent.NoventManager;
 import com.primeradiants.oniri.user.UserEntity;
 import com.primeradiants.oniri.user.UserManager;
 
+/**
+ * Servlets the return novent files
+ * @author gbiaux
+ * @since 0.1.0
+ */
 @Controller
 @RequestMapping("/servlet")
 public class NoventServlet {
@@ -36,6 +41,19 @@ public class NoventServlet {
 	
 	private static final String ID = "id";
 
+	/**
+	 * @api {get} /servlet/novent/cover/:id Get novent cover image
+	 * @apiName getNoventCover
+	 * @apiGroup Novent
+	 * @apiVersion 0.1.0
+	 * 
+	 * @apiParam {Number} id      Novent unique ID.
+	 * 
+	 * Get the requested novent cover image
+	 * @param id the id of the novent
+	 * @param request
+	 * @param response
+	 */
 	@RequestMapping("/novent/cover/{id}")
 	public void getNoventCover(@PathVariable(ID) Integer id, HttpServletRequest request, HttpServletResponse response) {
 		NoventEntity novent = noventManager.getNovent(id);
@@ -60,8 +78,20 @@ public class NoventServlet {
 		}
 	}
 	
+	 /**
+	  * @api {get} /servlet/novent/:id/:filePath Get novent cover image
+	  * @apiName getNoventFile
+	  * @apiGroup Novent
+	  * @apiVersion 0.1.0
+	  * 
+	  * @apiParam {Number} id      		Novent unique ID.
+	  * @apiParam {String} filePath     The path of requested file in novent archive.
+	  * 
+	  * Get a file in requested novent archive
+	  * @param id the id of the novent
+	  */
 	@RequestMapping("/novent/{id}/**")
-	public void getNoventFiles(@PathVariable(ID) Integer id, HttpServletRequest request, HttpServletResponse response) {
+	public void getNoventFile(@PathVariable(ID) Integer id, HttpServletRequest request, HttpServletResponse response) {
 		NoventEntity novent = noventManager.getNovent(id);
 		
 		//Check if the novent exists

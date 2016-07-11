@@ -31,12 +31,24 @@ public class UserResource {
 	@Autowired private UserManager userManager;
 	
 	/**
-	 * @api {get} /user Request current user information
-	 * @apiName GetCurrentUser
+	 * @api {get} /rest/api/user Request current user information
+	 * @apiName getCurrentUser
 	 * @apiGroup User
+	 * @apiVersion 0.1.0
 	 * 
+	 * @apiSuccess {String} username Username of the User.
+	 * @apiSuccess {String} email  Email of the User.
+	 * @apiSuccess {Date} created  Creation date the User.
 	 * 
-	 * Retrieves the current loged in user.
+	 * @apiSuccessExample Success-Response:
+	 *     HTTP/1.1 200 OK
+	 *     {
+	 *       "username": "gabitbol",
+	 *       "email": "george.abitbol@prime-radiants.com",
+	 *       "created": "1468237452"
+	 *     }
+	 * 
+	 * Retrieves the current logged in user.
 	 * @return a {@link com.primeradiants.oniri.rest.UserResource.UserResponse}.
 	 */
 	@RequestMapping(value = "/user", method = RequestMethod.GET)
