@@ -169,7 +169,7 @@ public class SignUpResource {
 
 	/**
 	 * Simple bean representing the data needed to sign up to Oniri
-	 * @author gbiaux
+	 * @author Shanira
 	 * @since 0.1.0
 	 */
 	@AllArgsConstructor

@@ -101,9 +101,9 @@ public class NoventResource {
 	 *       "publication": 1468237452
 	 *     }
 	 * 
-	 * @apiError {Object[]}
-	 * @apiError {String} field Field where lies the input validation error
-	 * @apiError {String} error Error description
+	 * @apiError {Object[]} response
+	 * @apiError {String} response.field Field where lies the input validation error
+	 * @apiError {String} response.error Error description
 	 * 
 	 * @apiErrorExample {json} Error-Response:
 	 *     HTTP/1.1 400 Bad Request
@@ -144,9 +144,9 @@ public class NoventResource {
 	 * @apiSuccessExample {json} Success-Response:
 	 *     HTTP/1.1 200 OK
 	 * 
-	 * @apiError {Object[]}
-	 * @apiError {String} field Field where lies the input validation error
-	 * @apiError {String} error Error description
+	 * @apiError {Object[]} response
+	 * @apiError {String} response.field Field where lies the input validation error
+	 * @apiError {String} response.error Error description
 	 * 
 	 * @apiErrorExample {json} Error-Response:
 	 *     HTTP/1.1 400 Bad Request
@@ -189,6 +189,11 @@ public class NoventResource {
 		return novent;
 	}
 	
+	/**
+	 * Simple bean representing a list of novents
+	 * @author Shanira
+	 * @since 0.1.0
+	 */
 	@AllArgsConstructor
 	@NoArgsConstructor
 	@Data

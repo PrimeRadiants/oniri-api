@@ -92,6 +92,12 @@ public class UserResource {
 //		return user;
 //	}
 	
+	/**
+	 * Simple bean representing a user
+	 * Used as a response by rest endpoints
+	 * @author Shanira
+	 * @since 0.1.0
+	 */
 	@AllArgsConstructor
 	@NoArgsConstructor
 	@Data
