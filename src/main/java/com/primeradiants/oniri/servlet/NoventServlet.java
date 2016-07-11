@@ -14,24 +14,25 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.primeradiants.oniri.novent.NoventEntity;
 import com.primeradiants.oniri.novent.NoventManager;
+import com.primeradiants.oniri.user.UserEntity;
+import com.primeradiants.oniri.user.UserManager;
 
 @Controller
 @RequestMapping("/servlet")
 public class NoventServlet {
 	
-	private static Logger logger = LoggerFactory.getLogger(NoventServlet.class);
-	
 	@Autowired ServletContext context;
 	@Autowired private NoventManager noventManager;
+	@Autowired private UserManager userManager;
 	
 	private static final String ID = "id";
 
@@ -63,24 +64,33 @@ public class NoventServlet {
 	public void getNoventFiles(@PathVariable(ID) Integer id, HttpServletRequest request, HttpServletResponse response) {
 		NoventEntity novent = noventManager.getNovent(id);
 		
+		//Check if the novent exists
 		if(novent == null) {
 			response.setStatus(404);
-			logger.info("Novent not found.");
 			return;
 		}
-			
+		
+		UserDetails currentUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		UserEntity user = userManager.getUser(currentUser.getUsername());
+		
+		//Check if the user has purchased the novent
+		if(!noventManager.doesUserOwnNovent(user, novent)) {
+			response.setStatus(403);
+			return;
+		}
+		
 		ZipFile noventFile = validateNoventFile(novent.getNoventPath());
 		
+		//Is the file a valid novent file
 		if(noventFile == null) {
 			response.setStatus(404);
-			logger.info("Missing or invalid novent file.");
 			return;
 		}
 		
 		ZipEntry requestedFile = validateRequestedFile(request, id, noventFile);
 		
+		//Does the requested file in novent archive exists
 		if(requestedFile == null) {
-			logger.info("Missing file in novent archive.");
 			response.setStatus(404);
 			return;
 		}

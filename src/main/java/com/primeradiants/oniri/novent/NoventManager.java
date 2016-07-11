@@ -24,6 +24,7 @@ public class NoventManager {
 	private SessionFactory sessionFactory = HibernateUtil.getSessionAnnotationFactory();
 	private static final String USER = "user"; 
 	private static final String ID = "id";
+	private static final String NOVENT = "novent"; 
 	
 	/**
 	 * Returns a novent based on id.
@@ -104,5 +105,21 @@ public class NoventManager {
 		session.getTransaction().commit();
 		
 		return userNoventEntity;
+	}
+	
+	public boolean doesUserOwnNovent(UserEntity user, NoventEntity novent) {
+		Session session = sessionFactory.getCurrentSession();
+		session.beginTransaction();
+		
+		Criteria criteria = session
+			    .createCriteria(UserNoventEntity.class)
+			    .add(Restrictions.eq(USER, user))
+			    .add(Restrictions.eq(NOVENT, novent))
+			    .setMaxResults(1);
+		
+		UserNoventEntity link = (UserNoventEntity) criteria.uniqueResult();
+		session.getTransaction().commit();
+		
+		return (link != null);
 	}
 }

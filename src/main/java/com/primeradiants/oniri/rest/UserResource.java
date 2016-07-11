@@ -31,6 +31,11 @@ public class UserResource {
 	@Autowired private UserManager userManager;
 	
 	/**
+	 * @api {get} /user Request current user information
+	 * @apiName GetCurrentUser
+	 * @apiGroup User
+	 * 
+	 * 
 	 * Retrieves the current loged in user.
 	 * @return a {@link com.primeradiants.oniri.rest.UserResource.UserResponse}.
 	 */
