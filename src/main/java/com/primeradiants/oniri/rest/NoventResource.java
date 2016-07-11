@@ -78,7 +78,7 @@ public class NoventResource {
 	}
 	
 	/**
-	 * @api {get} /rest/api/novent/:id Request list of novents in store
+	 * @api {get} /rest/api/novent/:id Request the data of a novent by its unique ID
 	 * @apiName getStoreNoventList
 	 * @apiGroup Novent
 	 * @apiVersion 0.1.0

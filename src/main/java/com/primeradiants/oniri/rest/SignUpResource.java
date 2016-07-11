@@ -38,7 +38,7 @@ public class SignUpResource {
 	private static final String UPPERCASE_REGEX = "(?=.*[A-Z])";
 	
 	/**
-	 * @api {get} /rest/api/novent/list Request list of novents in store
+	 * @api {get} /rest/api/novent/list Create a new user
 	 * @apiName signUp
 	 * @apiGroup SignUp
 	 * @apiVersion 0.1.0
