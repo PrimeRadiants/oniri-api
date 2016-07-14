@@ -11,5 +11,5 @@ script:
   - mvn test
   - mvn javadoc:javadoc
 after_success:
-  - find target/site/apidocs/ -type f -exec curl --ftp-create-dirs -T {} -u FTP_USER:FTP_PASSWORD ftp://fpt.cluster007.ovh.net/doc/TRAVIS_BRANCH/VERSION/
-  - find target/site/apidocs/ -type f -exec curl --ftp-create-dirs -T {} -u FTP_USER:FTP_PASSWORD ftp://fpt.cluster007.ovh.net/doc/TRAVIS_BRANCH/latest/
+  - find target/site/apidocs/ -type f -exec curl --ftp-create-dirs -T {} -u FTP_USER:FTP_PASSWORD ftp://fpt.cluster007.ovh.net/doc/TRAVIS_BRANCH/VERSION/{} \;
+  - find target/site/apidocs/ -type f -exec curl --ftp-create-dirs -T {} -u FTP_USER:FTP_PASSWORD ftp://fpt.cluster007.ovh.net/doc/TRAVIS_BRANCH/latest/{} \;
