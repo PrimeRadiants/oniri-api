@@ -91,6 +91,8 @@ public class NoventServlet {
 	 /**
 	  * Get a file in requested novent archive
 	  * @param id the id of the novent
+	  * @param request
+	  * @param response
 	  */
 	@RequestMapping("/novent/{id}/**")
 	public void getNoventFile(@PathVariable(ID) Integer id, HttpServletRequest request, HttpServletResponse response) {

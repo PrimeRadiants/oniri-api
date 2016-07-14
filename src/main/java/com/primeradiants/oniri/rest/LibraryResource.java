@@ -55,7 +55,7 @@ public class LibraryResource {
 	 */
 	/**
 	 * Returns the list of all the current user novents
-	 * @return a List of {@link com.primeradiants.oniri.rest.LibraryResource.NoventResponse}
+	 * @return a List of {@link com.primeradiants.oniri.rest.NoventResource.NoventResponse}
 	 */
 	@RequestMapping(value = "/library/list", method = RequestMethod.GET)
 	public ResponseEntity<?> getCurrentUserLibraryNoventList() {
