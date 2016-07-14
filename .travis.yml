@@ -3,7 +3,7 @@ jdk:
   - oraclejdk8
 env:
   global:
-    - VERSION=0.1.0
+    - "VERSION=0.1.0"
   secure: 
     - ghWRSJsIGXADyYpoMqjTDZ3KaBAzEmea4LbF4xpvKxbXhLsWy6SehnEQwuAOc0nvtFxj9tdEtx1WwVXEw2y6x6/cwWvcjwxnBsQTW2DjoCfmqO5WBfCl/bBOBWrKRz5yP2NzU+832mPPGXQSCpjXkR//x/ANmTuZtDuMhTzAn+ikGnJqSuAdYuV4LeU3EBBM8Qo/O9ptBzPHK5uQ96cnOv/3097pXEuw6XkB1xblU+3BqHvIc2lgTFyIqUSahhzMkjUdCkY1/nq1yRn70A2bQfqI+qHXjg7fD8yM9Mdj3ATCsGj8Pwmv8z1g76QH3angj9ENPSGxcxn0MnlYIXUaW5FwuvSW0w4/McsNs6cdF9r5WgX+ErrSg32eW9TqdTWkWgNW4iMQ38nK9wPs9JjE7Eyi3auDn6tmp7A7o1YcIZi0Coa3/pwHTwjgifglFry++YZKo8IWjDZJK1M3x6mlIfkF3/mHJEBxc58ct/FevJJnB+hVfJpO99Usx/HgrIhGUsiCs77bkQBVYJfgESRPKEx+iJInFAMehykGysRFSXjXLpDgBhYFlQJjCO3xpCp+ytjDm/ZswWMd60OlvgVO2AE12WmOOd9pxl37GfOOTOPLVK3gNtA+5izuWB5NXqU9fF3uV5ZcWReSd37CLMtS7FawcK0jXSxiR+wN2Q8gjZw=
     - 1wR5rqDaCG2KsdBqcQC3fKK1DmU74JM1/If+PUBdUj5vRKM+THy08Y3c8+2HJupqD3rYloX77WASF7yPLoiGn7cqhXozUEQDJ9OuOHD91lWSrlqiOT/ZQWywxbj4yKcbjdsVXToA/I81u83yoOKZkqGAvwd2vhX6IInOhbLOoULjS0XxgsEuGjFW7trIwgCji1baw+6ilVAjdSdSu/XSm/VxX8TxlkFh+CFYpjbnjSEqg8H49NT5CG0Tsaulkd55zCOHO+Y5LNAfL4oWqmLE6WNkeq3J+HVU/yJl6v81H6jJxDsFNg6zB7dwGW5nKSKiwCvx3rU5WcmJTtIcfb1ZKqp3w63cHkXfaTOKqPspaHD0DL61v/ydFW9V9qMWwsYJF1YyGLm+jRzu7F7I70h5/1dn46ABXanCjtmTh4Sgkx+unn3cGVAOJ07FCcmQICtv0QdmD0IvD0wSBNFG0qojBKtxhQZOnk5lImzxegtc9BcvlAMVP13f6R0dF/LGPK4BtHTjPi1k1I9B25vfsjT1U6VfWSyc6NPHiFtm/va5sg07Yw0+PqljXfAQHND/Bj5EpDuCSM4q0TE2Kku/xPXutGBgBP6WQm3Ic54vSHaMQt0zGiEDl4Sl8vbVAUT+qvCXRW7IOYC0EisGpxtjCeYiKS49Abl+ZheGBmKpew19stU=
@@ -11,5 +11,5 @@ script:
   - mvn test
   - mvn javadoc:javadoc
 after_success:
-  - find target/site/apidocs/ -type f -exec curl --ftp-create-dirs -T {} -u $FTP_USER:$FTP_PASSWORD ftp://fpt.cluster007.ovh.net/doc/$TRAVIS_BRANCH/$VERSION/{} \;
-  - find target/site/apidocs/ -type f -exec curl --ftp-create-dirs -T {} -u $FTP_USER:$FTP_PASSWORD ftp://fpt.cluster007.ovh.net/doc/$TRAVIS_BRANCH/latest/{} \;
+  - "find target/site/apidocs/ -type f -exec curl --ftp-create-dirs -T {} -u $FTP_USER:$FTP_PASSWORD ftp://fpt.cluster007.ovh.net/doc/$TRAVIS_BRANCH/$VERSION/{} \;"
+  - "find target/site/apidocs/ -type f -exec curl --ftp-create-dirs -T {} -u $FTP_USER:$FTP_PASSWORD ftp://fpt.cluster007.ovh.net/doc/$TRAVIS_BRANCH/latest/{} \;"
