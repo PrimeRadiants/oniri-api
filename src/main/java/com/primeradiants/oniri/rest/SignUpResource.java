@@ -58,7 +58,8 @@ public class SignUpResource {
 	 *       "email": "george.abitbol@prime-radiants.com",
 	 *       "created": 1468237452
 	 *     }
-	 * 
+	 */
+	/**
 	 * Allow a user to create an account on Oniri
 	 * 
 	 * @param input Object representing sign up data

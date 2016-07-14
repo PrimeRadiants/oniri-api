@@ -48,7 +48,8 @@ public class NoventServlet {
 	 * @apiVersion 0.1.0
 	 * 
 	 * @apiParam {Number} id      Novent unique ID.
-	 * 
+	 */
+	/**
 	 * Get the requested novent cover image
 	 * @param id the id of the novent
 	 * @param request
@@ -86,7 +87,8 @@ public class NoventServlet {
 	  * 
 	  * @apiParam {Number} id      		Novent unique ID.
 	  * @apiParam {String} filePath     The path of requested file in novent archive.
-	  * 
+	  */
+	 /**
 	  * Get a file in requested novent archive
 	  * @param id the id of the novent
 	  */

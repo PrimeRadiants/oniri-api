@@ -61,7 +61,8 @@ public class NoventResource {
 	 *       	"publication": 1468237452
 	 *       }]
 	 *     }
-	 * 
+	 */
+	/**
 	 * Returns the list of all the novents in store
 	 * @return a List of {@link com.primeradiants.oniri.rest.LibraryResource.NoventResponse}.
 	 */
@@ -111,7 +112,8 @@ public class NoventResource {
 	 *     	"field": "id"
 	 *       "error": "Unknown novent with id 1"
 	 *     }]
-	 * 
+	 */
+	/**
 	 * Retrieves a novent by its id
 	 * @param id the id of the novent
 	 * @return a {@link com.primeradiants.oniri.rest.LibraryResource.NoventResponse} if novent exists, 
@@ -154,7 +156,8 @@ public class NoventResource {
 	 *     	"field": "id"
 	 *       "error": "Unknown novent with id 1"
 	 *     }]
-	 * 
+	 */
+	/**
 	 * Create an own link between a user and a novent
 	 * @param id the id of the novent
 	 * @return a {@link com.primeradiants.oniri.rest.LibraryResource.NoventResponse} if novent exists, 

@@ -47,7 +47,8 @@ public class UserResource {
 	 *       "email": "george.abitbol@prime-radiants.com",
 	 *       "created": "1468237452"
 	 *     }
-	 * 
+	 */
+	/**
 	 * Retrieves the current logged in user.
 	 * @return a {@link com.primeradiants.oniri.rest.UserResource.UserResponse}.
 	 */
