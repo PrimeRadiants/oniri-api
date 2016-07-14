@@ -177,7 +177,6 @@
         <version>2.10.4</version>
         <configuration>
           <show>public</show>
-          <failOnError>false</failOnError>
         </configuration>
       </plugin>
     </plugins>
