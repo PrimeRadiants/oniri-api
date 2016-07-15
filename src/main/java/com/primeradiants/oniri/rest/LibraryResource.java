@@ -1,6 +1,7 @@
 package com.primeradiants.oniri.rest;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +67,7 @@ public class LibraryResource {
 		List<NoventResponse> response = new ArrayList<NoventResponse>();
 		
 		for(NoventEntity novent : novents)
-			response.add(new NoventResponse(novent.getId(), novent.getTitle(), novent.getAuthors(), novent.getPublication()));
+			response.add(new NoventResponse(novent.getId(), novent.getTitle(), novent.getAuthors(), new Date(novent.getPublication().getTime())));
 		
 		return ResponseEntity.ok(new NoventListResponse(response));
 	}
