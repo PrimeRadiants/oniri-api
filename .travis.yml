@@ -14,7 +14,7 @@ env:
   - secure: WJofnh72rv37DOV/2YjCSdZ0BI+NWeWQ2DIR4d4UM6kZB/lWpt2YqFfDYbYm9qthcwy3uCo1t+CB9WdnvC8x8KE0H8V2eCT03tW03jcdsOZeVj5H1kFCy5vUUyH5XTqmFCxoou/La/+hM7he9xZw9zOhx/lu0LccbyN7+oXAcQBAnLbZhG7JB4D+LEibWdkuIthpXAag5096c14RNr3sJBM7YMIwMmXBOfFtXSKrS7y35RQLV+W9O8xm3ooAXBIAmXLc1hynwkX/x5iMoNFWbWjPHVDHJ/I/Gpi+oUUxtLO6rSqGd6GkQpNHPXnH4BZ7rQt6MEFHNLHZCa6g+Nwrqv7ZtkI8JUb1MdzvF/GK7xSQEIUkhQsPjfsTrKCieJ9mObPdbs5DXW3ZqCKLW0SpLK+Z1eqFqb7JSE8DvUZiM62TJspxW7mOdaHSjl99uggVxyrbqHoYeZz0f6LSE6Xfm3UZzoFBTJulnHfQWCA7WqOOokmW4ubDJp2pPwFlXAyoXCC3fTMRo3zIssUJy0kmftj1jxCMqBGeqOpjk6O2BAgRB490SdCath1soM3DMccwzg5WkWktVeyTP6qyY7ffN+in3PadcVJTZL7yIZE0a2OQub/1Z7gO5volTfSqBru6LdWV/CGMLgSJzGfKeGUh5jos4KG6nJwRLhQcKSwSIno=
 before_install:
   - npm install apidoc -g
-  - mysql -e 'create database oniri-test;'
+  - mysql -u root -e 'create database oniri-test;'
 script:
   - mvn test
   - mvn javadoc:javadoc
