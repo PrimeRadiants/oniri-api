@@ -3,8 +3,8 @@ language:
   - node_js
 jdk:
   - oraclejdk8
-  - "6"
 node_js:
+  - "6"
 env:
   global:
   - VERSION=0.1.0
