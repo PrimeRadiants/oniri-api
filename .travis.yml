@@ -20,3 +20,6 @@ after_success:
   - cd target/site/apidocs/
   - find -type f -exec curl --ftp-create-dirs -T {} -u $FTP_USER:$FTP_PASSWORD ftp://ftp.cluster007.ovh.net/doc/oniri/java/$TRAVIS_BRANCH/$VERSION/{} \;
   - find -type f -exec curl --ftp-create-dirs -T {} -u $FTP_USER:$FTP_PASSWORD ftp://ftp.cluster007.ovh.net/doc/oniri/java/$TRAVIS_BRANCH/latest/{} \;
+  - cd ../restapidocs/
+  - find -type f -exec curl --ftp-create-dirs -T {} -u $FTP_USER:$FTP_PASSWORD ftp://ftp.cluster007.ovh.net/doc/oniri/rest/$TRAVIS_BRANCH/$VERSION/{} \;
+  - find -type f -exec curl --ftp-create-dirs -T {} -u $FTP_USER:$FTP_PASSWORD ftp://ftp.cluster007.ovh.net/doc/oniri/rest/$TRAVIS_BRANCH/latest/{} \;
