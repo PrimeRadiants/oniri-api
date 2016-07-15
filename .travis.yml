@@ -12,5 +12,7 @@ script:
   - "mvn javadoc:javadoc"
 after_success:
   #Deploying javadoc to Prime Radiants server
+  - "echo $TRAVIS_BRANCH"
+  - "echo $VERSION"
   - "find target/site/apidocs/ -type f -exec curl --ftp-create-dirs -T {} -u $FTP_USER:$FTP_PASSWORD ftp://ftp.cluster007.ovh.net/doc/$TRAVIS_BRANCH/$VERSION/{} \\;"
   - "find target/site/apidocs/ -type f -exec curl --ftp-create-dirs -T {} -u $FTP_USER:$FTP_PASSWORD ftp://ftp.cluster007.ovh.net/doc/$TRAVIS_BRANCH/latest/{} \\;"
