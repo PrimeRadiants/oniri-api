@@ -29,9 +29,9 @@ import com.primeradiants.oniri.novent.NoventEntity;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = ApplicationConfig.class)
-public class NoventResourceTest {
+public class NoventListGetTest {
 
-	private static Logger logger = LoggerFactory.getLogger(NoventResourceTest.class);
+	private static Logger logger = LoggerFactory.getLogger(NoventListGetTest.class);
 	
 	@Autowired
     private WebApplicationContext webApplicationContext;
@@ -40,13 +40,13 @@ public class NoventResourceTest {
     
     @BeforeClass
 	public static void initAllTests() {
-    	logger.info("======================== Starting NoventResourceTest ========================");
+    	logger.info("======================== Starting NoventListGetTest ========================");
     	PrepareTestUtils.cleanNoventTable();
     	insertedUser = PrepareTestUtils.insertTestNovent();
 	}
     
     @Before
-    public void setup() {
+    public void initEachTest() {
         DefaultMockMvcBuilder builder = MockMvcBuilders.webAppContextSetup(this.webApplicationContext);
         this.mockMvc = builder.build();
     }
@@ -70,7 +70,7 @@ public class NoventResourceTest {
     }
     
     @Test
-    public void NoventListReturnsUserInDatabase() throws Exception {
+    public void NoventListReturnsNoventInDatabase() throws Exception {
     	JSONObject expectedJson = new JSONObject();
     	JSONArray novents = new JSONArray();
     	JSONObject novent = new JSONObject();
@@ -86,16 +86,16 @@ public class NoventResourceTest {
     	novents.put(novent);
     	expectedJson.put("novents", novents);
     	
-        ResultMatcher user = MockMvcResultMatchers.content().json(expectedJson.toString());
+        ResultMatcher noventMatcher = MockMvcResultMatchers.content().json(expectedJson.toString());
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/novent/list");
         this.mockMvc.perform(builder)
-                    .andExpect(user);
+                    .andExpect(noventMatcher);
     }
     
     @AfterClass
 	public static void endingAllTests() {
     	PrepareTestUtils.cleanNoventTable();
-    	logger.info("======================== Ending NoventResourceTest ========================");
+    	logger.info("======================== Ending NoventListGetTest ========================");
 	}
 }
