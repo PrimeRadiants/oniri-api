@@ -38,7 +38,7 @@ import com.primeradiants.oniri.user.UserEntity;
 @ContextConfiguration(classes = ApplicationConfig.class)
 public class SignUpTest {
 
-private static Logger logger = LoggerFactory.getLogger(SignUpTest.class);
+	private static Logger logger = LoggerFactory.getLogger(SignUpTest.class);
 	
 	@Autowired
     private WebApplicationContext webApplicationContext;
