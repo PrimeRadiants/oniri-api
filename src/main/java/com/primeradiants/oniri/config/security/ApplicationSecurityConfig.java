@@ -53,9 +53,9 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 				//TODO : determine if keeping this protection or not
 				.csrf()
 					.disable()
-				.antMatcher("/rest/**")
 				.authorizeRequests()
-					.anyRequest().authenticated()
+					.antMatchers("/rest/**").authenticated()
+					.antMatchers("/signUp").permitAll()
 					.and()
 				.httpBasic();
 		}

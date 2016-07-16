@@ -123,6 +123,7 @@ public class NoventPostTest {
         
         SessionFactory sessionFactory = HibernateUtil.getSessionAnnotationFactory();
     	Session session = sessionFactory.openSession();
+    	session.beginTransaction();
     	
     	Criteria criteria = session.createCriteria(UserNoventEntity.class)
     			.add(Restrictions.eq("user", insertedUser))
@@ -130,6 +131,9 @@ public class NoventPostTest {
     			.setMaxResults(1);
     	
     	UserNoventEntity userNoventLink = (UserNoventEntity) criteria.uniqueResult();
+    	
+    	session.getTransaction().commit();
+    	session.close();
     	
     	Assert.assertNotNull(userNoventLink);
     }

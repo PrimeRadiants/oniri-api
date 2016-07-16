@@ -33,9 +33,10 @@ public class SignUpResource {
 	
 	private static final String USERNAME = "username";
 	private static final String EMAIL = "email";
-	private static final String DIGIT_REGEX = "(?=.*\\d)";
-	private static final String LOWERCASE_REGEX = "(?=.*[a-z])";
-	private static final String UPPERCASE_REGEX = "(?=.*[A-Z])";
+	private static final String PASSWORD = "password";
+	private static final String DIGIT_REGEX = ".*[1-9].*";
+	private static final String LOWERCASE_REGEX = ".*[a-z].*";
+	private static final String UPPERCASE_REGEX = ".*[A-Z].*";
 	
 	/**
 	 * @api {get} /rest/api/novent/list Create a new user
@@ -100,7 +101,14 @@ public class SignUpResource {
 		
 		if(username.contains(" ")) {
 			errors.add(new ValidationError(USERNAME, "Invalid username : the username must not contain any spaces"));
-			return username;
+		}
+		
+		if(username.length() > 35) {
+			errors.add(new ValidationError(USERNAME, "Invalid username : the username must be shorter than 35 characters"));
+		}
+		
+		if(username.length() < 3) {
+			errors.add(new ValidationError(USERNAME, "Invalid username : the username must be at least 3 characters"));
 		}
 		
 		UserEntity user = userManager.getUser(username);
@@ -121,7 +129,7 @@ public class SignUpResource {
 	 */
 	private String validateEmail(String email, Collection<ValidationError> errors) {
 		if(email == null || email.equals("")) {
-			errors.add(new ValidationError(USERNAME, "Missing parameter 'email'"));
+			errors.add(new ValidationError(EMAIL, "Missing parameter 'email'"));
 			return email;
 		}
 		
@@ -149,21 +157,29 @@ public class SignUpResource {
 	 */
 	private String validatePassword(String password, Collection<ValidationError> errors) {
 		if(password == null) {
-			errors.add(new ValidationError(USERNAME, "Missing parameter 'email'"));
+			errors.add(new ValidationError(PASSWORD, "Missing parameter 'email'"));
 			return password;
+		}
+		
+		if(password.contains(" ")) {
+			errors.add(new ValidationError(PASSWORD, "Invalid password : the password must not contain any spaces"));
+		}
+		
+		if(password.length() < 8) {
+			errors.add(new ValidationError(PASSWORD, "Invalid password : the password must be at least 8 characters"));
 		}
 		
 		Pattern digitPattern = Pattern.compile(DIGIT_REGEX);
 		if(!digitPattern.matcher(password).matches())
-			errors.add(new ValidationError(USERNAME, "Password must contain at least one digit"));
+			errors.add(new ValidationError(PASSWORD, "Password must contain at least one digit"));
 		
 		Pattern lowercasePattern = Pattern.compile(LOWERCASE_REGEX);
 		if(!lowercasePattern.matcher(password).matches())
-			errors.add(new ValidationError(USERNAME, "Password must contain at least one lowercase character"));
+			errors.add(new ValidationError(PASSWORD, "Password must contain at least one lowercase character"));
 		
 		Pattern uppercasePattern = Pattern.compile(UPPERCASE_REGEX);
 		if(!uppercasePattern.matcher(password).matches())
-			errors.add(new ValidationError(USERNAME, "Password must contain at least one uppercase character"));
+			errors.add(new ValidationError(PASSWORD, "Password must contain at least one uppercase character"));
 		
 		return password;
 	}
