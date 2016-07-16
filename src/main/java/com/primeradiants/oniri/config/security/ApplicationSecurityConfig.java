@@ -55,6 +55,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 					.disable()
 				.authorizeRequests()
 					.antMatchers("/rest/**").authenticated()
+					.antMatchers("/servlet/**").authenticated()
 					.antMatchers("/signUp").permitAll()
 					.and()
 				.httpBasic();

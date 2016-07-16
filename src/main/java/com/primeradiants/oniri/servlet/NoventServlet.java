@@ -130,7 +130,7 @@ public class NoventServlet {
 		}
 		
 		try {
-			returnZipedFileAsResponse(noventFile.getName(), noventFile, requestedFile, response);
+			returnZipedFileAsResponse(requestedFile.getName(), noventFile, requestedFile, response);
 		} catch (IOException e) {
 			response.setStatus(404);
 			e.printStackTrace();
@@ -197,6 +197,8 @@ public class NoventServlet {
     	
     	String mimeType = getMimeType(fileName);
         
+    	System.out.println(mimeType);
+    	System.out.println(fileName);
         resp.setContentType(mimeType);
         resp.setHeader("Content-Type", mimeType);
         resp.setContentLength((int) zipedFile.getSize());
