@@ -28,13 +28,14 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.primeradiants.oniri.config.ApplicationConfig;
 import com.primeradiants.oniri.novent.NoventEntity;
+import com.primeradiants.oniri.user.UserEntity;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = ApplicationConfig.class)
-public class NoventGetTest {
-	
-private static Logger logger = LoggerFactory.getLogger(NoventGetTest.class);
+public class LibraryListGetTest {
+
+private static Logger logger = LoggerFactory.getLogger(NoventPostTest.class);
 	
 	@Autowired
     private WebApplicationContext webApplicationContext;
@@ -42,73 +43,49 @@ private static Logger logger = LoggerFactory.getLogger(NoventGetTest.class);
 	private Filter springSecurityFilterChain;
     private MockMvc mockMvc;
 	private static NoventEntity insertedNovent;
+	private static UserEntity insertedUser;
 	
 	@BeforeClass
 	public static void initAllTests() {
-    	logger.info("======================== Starting NoventGetTest ========================");
+    	logger.info("======================== Starting LibraryListGetTest ========================");
     	PrepareTestUtils.cleanUserNoventTable();
     	PrepareTestUtils.cleanNoventTable();
     	PrepareTestUtils.cleanUserTable();
     	insertedNovent = PrepareTestUtils.insertTestNovent();
-    	PrepareTestUtils.insertTestUser();
+    	insertedUser = PrepareTestUtils.insertTestUser();
 	}
     
-	@Before
+    @Before
     public void initEachTest() {
         this.mockMvc =  MockMvcBuilders
         		.webAppContextSetup(this.webApplicationContext)
         		.addFilters(springSecurityFilterChain)
         		.build();
     }
-	
-	@Test
+    
+    @Test
     public void NoventListReturns401WhenNotLoggedIn() throws Exception {
     	ResultMatcher unauthorized = MockMvcResultMatchers.status().isUnauthorized();
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/novent/" + insertedNovent.getId());
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/library/list");
         this.mockMvc.perform(builder)
                     .andExpect(unauthorized);
     }
-	
-	@Test
+    
+    @Test
     public void NoventListReturns401WithNonExistingUser() throws Exception {
     	ResultMatcher unauthorized = MockMvcResultMatchers.status().isUnauthorized();
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/novent/" + insertedNovent.getId()).with(httpBasic(PrepareTestUtils.USER_USERNAME + "1", PrepareTestUtils.USER_PASSWORD));
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/library/list").with(httpBasic(PrepareTestUtils.USER_USERNAME + "1", PrepareTestUtils.USER_PASSWORD));
         this.mockMvc.perform(builder)
                     .andExpect(unauthorized);
     }
     
     @Test
-    public void NoventReturns400ResponseForInvalidID() throws Exception {
-    	ResultMatcher badRequest = MockMvcResultMatchers.status().isBadRequest();
-
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/novent/" + (insertedNovent.getId() + 1)).with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD));
-        this.mockMvc.perform(builder)
-                    .andExpect(badRequest);
-    }
-    
-    @Test
-    public void NoventReturnsErrorObjectForInvalidID() throws Exception {
-    	JSONArray expectedJson = new JSONArray();
-    	JSONObject error = new JSONObject();
-    	error.put("field", "id");
-    	error.put("error", "Unknown novent with id " + (insertedNovent.getId() + 1));
-    	
-    	expectedJson.put(error);
-    	
-    	ResultMatcher jsonError = MockMvcResultMatchers.content().json(expectedJson.toString());
-
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/novent/" + (insertedNovent.getId() + 1)).with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD));
-        this.mockMvc.perform(builder)
-                    .andExpect(jsonError);
-    }
-    
-    @Test
-    public void NoventReturnsOkResponseForExistingID() throws Exception {
+    public void NoventListReturnsOkWhenLoggedInWithExistingUser() throws Exception {
     	ResultMatcher ok = MockMvcResultMatchers.status().isOk();
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/novent/" + insertedNovent.getId()).with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD));
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/library/list").with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD));
         this.mockMvc.perform(builder)
                     .andExpect(ok);
     }
@@ -117,36 +94,42 @@ private static Logger logger = LoggerFactory.getLogger(NoventGetTest.class);
     public void NoventListReturnsUtf8Json() throws Exception {
         ResultMatcher json = MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8);
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/novent/" + insertedNovent.getId()).with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD));
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/library/list").with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD));
         this.mockMvc.perform(builder)
                     .andExpect(json);
     }
     
     @Test
-    public void NoventReturnsNoventInDatabase() throws Exception {
+    public void LibraryListReturnsUserOwnedNoventsInDatabase() throws Exception {
+    	PrepareTestUtils.createUserNoventLink(insertedUser, insertedNovent);
+    	
+    	JSONObject expectedJson = new JSONObject();
+    	JSONArray novents = new JSONArray();
     	JSONObject novent = new JSONObject();
     	
     	novent.put("id", insertedNovent.getId());
     	novent.put("title", PrepareTestUtils.NOVENT_TITLE);
-    	novent.put("description", PrepareTestUtils.NOVENT_DESCRIPTION);
     	
     	JSONArray authors = new JSONArray();
     	authors.put(PrepareTestUtils.NOVENT_AUTHOR);
     	novent.put("authors", authors);
     	novent.put("publication", insertedNovent.getPublication().getTime());
-    	    	
-        ResultMatcher noventMatcher = MockMvcResultMatchers.content().json(novent.toString());
+    	
+    	novents.put(novent);
+    	expectedJson.put("novents", novents);
+    	
+        ResultMatcher noventMatcher = MockMvcResultMatchers.content().json(expectedJson.toString());
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/novent/" + insertedNovent.getId()).with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD));
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/library/list").with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD));
         this.mockMvc.perform(builder)
                     .andExpect(noventMatcher);
     }
     
     @AfterClass
-   	public static void endingAllTests() {
+	public static void endingAllTests() {
     	PrepareTestUtils.cleanUserNoventTable();
-       	PrepareTestUtils.cleanNoventTable();
-       	PrepareTestUtils.cleanUserTable();
-       	logger.info("======================== Ending NoventGetTest ========================");
-   	}
+    	PrepareTestUtils.cleanNoventTable();
+    	PrepareTestUtils.cleanUserTable();
+    	logger.info("======================== Ending LibraryListGetTest ========================");
+	}
 }

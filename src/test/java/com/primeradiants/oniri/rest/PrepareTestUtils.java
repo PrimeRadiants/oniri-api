@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.primeradiants.hibernate.util.HibernateUtil;
 import com.primeradiants.oniri.novent.NoventEntity;
+import com.primeradiants.oniri.novent.UserNoventEntity;
 import com.primeradiants.oniri.user.UserEntity;
 
 public class PrepareTestUtils {
@@ -111,5 +112,18 @@ public class PrepareTestUtils {
 		
 		session.close();
 		return novent;
+	}
+	
+	public static UserNoventEntity createUserNoventLink(UserEntity user, NoventEntity novent) {
+		Session session = sessionFactory.openSession();
+		session.beginTransaction();
+		
+		UserNoventEntity userNoventEntity = new UserNoventEntity(0, user, novent, new Date());
+		session.save(userNoventEntity);
+		
+		session.getTransaction().commit();
+		session.close();
+		
+		return userNoventEntity;
 	}
 }
