@@ -19,7 +19,6 @@ public class PrepareTestUtils {
 	private static Logger logger = LoggerFactory.getLogger(PrepareTestUtils.class);
 	
 	private static SessionFactory sessionFactory = HibernateUtil.getSessionAnnotationFactory();
-	private static Session session = sessionFactory.openSession();
 	
 	public final static String USER_USERNAME = "gabitbol";
 	public final static String USER_EMAIL = "george.abitbol@prime-radiants.com";
@@ -33,19 +32,26 @@ public class PrepareTestUtils {
 	
 	public static void cleanUserTable() {
 		logger.info("Cleaning User Table");
+		Session session = sessionFactory.openSession();
+		session.beginTransaction();
 		
 		Query query = session.createQuery("delete from UserEntity");
 		int deletedLines = 0;
 		deletedLines = query.executeUpdate();
 		
 		logger.info("User Table cleaned : " + deletedLines + " lines deleted ");
+		session.getTransaction().commit();
+		session.close();
 	}
 	
 	public static void cleanNoventTable() {
 		logger.info("Cleaning Novent Table");
-		
+				
+		Session session = sessionFactory.openSession();
+		session.beginTransaction();
+				
 		//Truncate novent_authors table to avoid foreign key contraint error
-		Query query = session.createSQLQuery("TRUNCATE novent_authors");
+		Query query = session.createSQLQuery("delete from novent_authors");
 		query.executeUpdate();
 		
 		query = session.createQuery("delete from NoventEntity");
@@ -53,20 +59,27 @@ public class PrepareTestUtils {
 		deletedLines = query.executeUpdate();
 		
 		logger.info("Novent Table cleaned : " + deletedLines + " lines deleted ");
+		session.getTransaction().commit();
+		session.close();
 	}
 	
 	public static void cleanUserNoventTable() {
 		logger.info("Cleaning UserNovent Table");
+		Session session = sessionFactory.openSession();
+		session.beginTransaction();
 		
 		Query query = session.createQuery("delete from UserNoventEntity");
 		int deletedLines = 0;
 		deletedLines = query.executeUpdate();
 		
 		logger.info("UserNovent Table cleaned : " + deletedLines + " lines deleted ");
+		session.getTransaction().commit();
+		session.close();
 	}
 	
 	public static UserEntity insertTestUser() {
 		UserEntity user = new UserEntity(0, USER_USERNAME, USER_EMAIL, USER_PASSWORD, new Date());
+		Session session = sessionFactory.openSession();
 		
 		session.beginTransaction();
 		session.save(user);
@@ -77,6 +90,7 @@ public class PrepareTestUtils {
 		//Getting result directly from database
 		user = (UserEntity) session.get(UserEntity.class, user.getId());
 		
+		session.close();
 		return user;
 	}
 	
@@ -84,6 +98,7 @@ public class PrepareTestUtils {
 		List<String> authors = new ArrayList<String>();
 		authors.add(NOVENT_AUTHOR);
 		NoventEntity novent = new NoventEntity(0, NOVENT_TITLE, authors, NOVENT_DESCRIPTION, new Date(), NOVENT_COVERPATH, NOVENT_PATH);
+		Session session = sessionFactory.openSession();
 		
 		session.beginTransaction();
 		session.save(novent);
@@ -94,6 +109,7 @@ public class PrepareTestUtils {
 		//Getting result directly from database
 		novent = (NoventEntity) session.get(NoventEntity.class, novent.getId());
 		
+		session.close();
 		return novent;
 	}
 }

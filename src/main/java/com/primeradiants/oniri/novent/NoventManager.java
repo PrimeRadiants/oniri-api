@@ -96,12 +96,23 @@ public class NoventManager {
 	}
 	
 	public UserNoventEntity createUserNoventLink(UserEntity user, NoventEntity novent) {
-		UserNoventEntity userNoventEntity = new UserNoventEntity(0, user, novent, new Date());
-		
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();
 		
-		session.save(userNoventEntity);
+		Criteria criteria = session
+			    .createCriteria(UserNoventEntity.class)
+			    .add(Restrictions.eq(USER, user))
+			    .add(Restrictions.eq(NOVENT, novent))
+			    .setMaxResults(1);
+		
+		UserNoventEntity userNoventEntity = (UserNoventEntity) criteria.uniqueResult();
+		
+		//Creating link only if it doesn't already exists
+		if(userNoventEntity == null) {
+			userNoventEntity = new UserNoventEntity(0, user, novent, new Date());
+			session.save(userNoventEntity);
+		}
+		
 		session.getTransaction().commit();
 		
 		return userNoventEntity;
