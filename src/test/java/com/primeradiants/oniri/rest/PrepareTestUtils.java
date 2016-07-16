@@ -28,10 +28,10 @@ public class PrepareTestUtils {
 	public final static String NOVENT_TITLE = "Novent title";
 	public final static String NOVENT_DESCRIPTION = "Novent description";
 	public final static String NOVENT_AUTHOR = "George Abitbol";
-	public final static String NOVENT_COVERPATH = "/path/to/cover.png";
-	public final static String NOVENT_PATH = "/path/to/file.novent";
+	public final static String NOVENT_COVERPATH = "novent/cover.png";
+	public final static String NOVENT_PATH = "novent/example.novent";
 	
-	public static void cleanUserTable() {
+	public void cleanUserTable() {
 		logger.info("Cleaning User Table");
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
@@ -45,7 +45,7 @@ public class PrepareTestUtils {
 		session.close();
 	}
 	
-	public static void cleanNoventTable() {
+	public void cleanNoventTable() {
 		logger.info("Cleaning Novent Table");
 				
 		Session session = sessionFactory.openSession();
@@ -64,7 +64,7 @@ public class PrepareTestUtils {
 		session.close();
 	}
 	
-	public static void cleanUserNoventTable() {
+	public void cleanUserNoventTable() {
 		logger.info("Cleaning UserNovent Table");
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
@@ -78,7 +78,7 @@ public class PrepareTestUtils {
 		session.close();
 	}
 	
-	public static UserEntity insertTestUser() {
+	public UserEntity insertTestUser() {
 		UserEntity user = new UserEntity(0, USER_USERNAME, USER_EMAIL, USER_PASSWORD, new Date());
 		Session session = sessionFactory.openSession();
 		
@@ -95,10 +95,12 @@ public class PrepareTestUtils {
 		return user;
 	}
 	
-	public static NoventEntity insertTestNovent() {
+	public NoventEntity insertTestNovent() {
+		ClassLoader classLoader = getClass().getClassLoader();
+		
 		List<String> authors = new ArrayList<String>();
 		authors.add(NOVENT_AUTHOR);
-		NoventEntity novent = new NoventEntity(0, NOVENT_TITLE, authors, NOVENT_DESCRIPTION, new Date(), NOVENT_COVERPATH, NOVENT_PATH);
+		NoventEntity novent = new NoventEntity(0, NOVENT_TITLE, authors, NOVENT_DESCRIPTION, new Date(), classLoader.getResource(NOVENT_COVERPATH).getPath(), classLoader.getResource(NOVENT_PATH).getPath());
 		Session session = sessionFactory.openSession();
 		
 		session.beginTransaction();
@@ -114,7 +116,7 @@ public class PrepareTestUtils {
 		return novent;
 	}
 	
-	public static UserNoventEntity createUserNoventLink(UserEntity user, NoventEntity novent) {
+	public UserNoventEntity createUserNoventLink(UserEntity user, NoventEntity novent) {
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
 		

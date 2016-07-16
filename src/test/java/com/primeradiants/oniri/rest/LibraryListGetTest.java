@@ -45,14 +45,16 @@ private static Logger logger = LoggerFactory.getLogger(NoventPostTest.class);
 	private static NoventEntity insertedNovent;
 	private static UserEntity insertedUser;
 	
+	private static final PrepareTestUtils prepareTestUtils = new PrepareTestUtils(); 
+	
 	@BeforeClass
 	public static void initAllTests() {
     	logger.info("======================== Starting LibraryListGetTest ========================");
-    	PrepareTestUtils.cleanUserNoventTable();
-    	PrepareTestUtils.cleanNoventTable();
-    	PrepareTestUtils.cleanUserTable();
-    	insertedNovent = PrepareTestUtils.insertTestNovent();
-    	insertedUser = PrepareTestUtils.insertTestUser();
+    	prepareTestUtils.cleanUserNoventTable();
+    	prepareTestUtils.cleanNoventTable();
+    	prepareTestUtils.cleanUserTable();
+    	insertedNovent = prepareTestUtils.insertTestNovent();
+    	insertedUser = prepareTestUtils.insertTestUser();
 	}
     
     @Before
@@ -101,7 +103,7 @@ private static Logger logger = LoggerFactory.getLogger(NoventPostTest.class);
     
     @Test
     public void LibraryListReturnsUserOwnedNoventsInDatabase() throws Exception {
-    	PrepareTestUtils.createUserNoventLink(insertedUser, insertedNovent);
+    	prepareTestUtils.createUserNoventLink(insertedUser, insertedNovent);
     	
     	JSONObject expectedJson = new JSONObject();
     	JSONArray novents = new JSONArray();
@@ -127,9 +129,9 @@ private static Logger logger = LoggerFactory.getLogger(NoventPostTest.class);
     
     @AfterClass
 	public static void endingAllTests() {
-    	PrepareTestUtils.cleanUserNoventTable();
-    	PrepareTestUtils.cleanNoventTable();
-    	PrepareTestUtils.cleanUserTable();
+    	prepareTestUtils.cleanUserNoventTable();
+    	prepareTestUtils.cleanNoventTable();
+    	prepareTestUtils.cleanUserTable();
     	logger.info("======================== Ending LibraryListGetTest ========================");
 	}
 }

@@ -46,6 +46,8 @@ public class SignUpTest {
 	private Filter springSecurityFilterChain;
     private MockMvc mockMvc;
     
+    private static final PrepareTestUtils prepareTestUtils = new PrepareTestUtils(); 
+    
     private static final String USERNAME = "username";
     private static final String EMAIL = "email";
     private static final String PASSWORD = "password";
@@ -79,11 +81,11 @@ public class SignUpTest {
     
     @Before
     public void initEachTest() {
-    	PrepareTestUtils.cleanUserNoventTable();
-    	PrepareTestUtils.cleanNoventTable();
-    	PrepareTestUtils.cleanUserTable();
+    	prepareTestUtils.cleanUserNoventTable();
+    	prepareTestUtils.cleanNoventTable();
+    	prepareTestUtils.cleanUserTable();
     	
-    	PrepareTestUtils.insertTestUser();
+    	prepareTestUtils.insertTestUser();
     	
         this.mockMvc =  MockMvcBuilders
         		.webAppContextSetup(this.webApplicationContext)
@@ -297,9 +299,9 @@ public class SignUpTest {
     
     @AfterClass
 	public static void endingAllTests() {
-    	PrepareTestUtils.cleanUserNoventTable();
-    	PrepareTestUtils.cleanNoventTable();
-    	PrepareTestUtils.cleanUserTable();
+    	prepareTestUtils.cleanUserNoventTable();
+    	prepareTestUtils.cleanNoventTable();
+    	prepareTestUtils.cleanUserTable();
     	logger.info("======================== Ending SignUpTest ========================");
 	}
     

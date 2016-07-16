@@ -43,14 +43,16 @@ private static Logger logger = LoggerFactory.getLogger(NoventGetTest.class);
     private MockMvc mockMvc;
 	private static NoventEntity insertedNovent;
 	
+	private static final PrepareTestUtils prepareTestUtils = new PrepareTestUtils(); 
+	
 	@BeforeClass
 	public static void initAllTests() {
     	logger.info("======================== Starting NoventGetTest ========================");
-    	PrepareTestUtils.cleanUserNoventTable();
-    	PrepareTestUtils.cleanNoventTable();
-    	PrepareTestUtils.cleanUserTable();
-    	insertedNovent = PrepareTestUtils.insertTestNovent();
-    	PrepareTestUtils.insertTestUser();
+    	prepareTestUtils.cleanUserNoventTable();
+    	prepareTestUtils.cleanNoventTable();
+    	prepareTestUtils.cleanUserTable();
+    	insertedNovent = prepareTestUtils.insertTestNovent();
+    	prepareTestUtils.insertTestUser();
 	}
     
 	@Before
@@ -144,9 +146,9 @@ private static Logger logger = LoggerFactory.getLogger(NoventGetTest.class);
     
     @AfterClass
    	public static void endingAllTests() {
-    	PrepareTestUtils.cleanUserNoventTable();
-       	PrepareTestUtils.cleanNoventTable();
-       	PrepareTestUtils.cleanUserTable();
+    	prepareTestUtils.cleanUserNoventTable();
+    	prepareTestUtils.cleanNoventTable();
+    	prepareTestUtils.cleanUserTable();
        	logger.info("======================== Ending NoventGetTest ========================");
    	}
 }

@@ -42,15 +42,17 @@ public class NoventListGetTest {
 	private Filter springSecurityFilterChain;
     private MockMvc mockMvc;
 	private static NoventEntity insertedNovent;
+	
+	private static final PrepareTestUtils prepareTestUtils = new PrepareTestUtils(); 
     
     @BeforeClass
 	public static void initAllTests() {
     	logger.info("======================== Starting NoventListGetTest ========================");
-    	PrepareTestUtils.cleanUserNoventTable();
-    	PrepareTestUtils.cleanNoventTable();
-    	PrepareTestUtils.cleanUserTable();
-    	insertedNovent = PrepareTestUtils.insertTestNovent();
-    	PrepareTestUtils.insertTestUser();
+    	prepareTestUtils.cleanUserNoventTable();
+    	prepareTestUtils.cleanNoventTable();
+    	prepareTestUtils.cleanUserTable();
+    	insertedNovent = prepareTestUtils.insertTestNovent();
+    	prepareTestUtils.insertTestUser();
 	}
     
     @Before
@@ -123,9 +125,9 @@ public class NoventListGetTest {
     
     @AfterClass
 	public static void endingAllTests() {
-    	PrepareTestUtils.cleanUserNoventTable();
-    	PrepareTestUtils.cleanNoventTable();
-    	PrepareTestUtils.cleanUserTable();
+    	prepareTestUtils.cleanUserNoventTable();
+    	prepareTestUtils.cleanNoventTable();
+    	prepareTestUtils.cleanUserTable();
     	logger.info("======================== Ending NoventListGetTest ========================");
 	}
 }

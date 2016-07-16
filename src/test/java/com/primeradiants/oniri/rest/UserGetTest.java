@@ -45,15 +45,17 @@ private static Logger logger = LoggerFactory.getLogger(SignUpTest.class);
     private final static String USERNAME = "username";
     private final static String EMAIL = "email";
     private final static String CREATED = "created";
+    
+    private static final PrepareTestUtils prepareTestUtils = new PrepareTestUtils(); 
 	
     @BeforeClass
 	public static void initAllTests() {
     	logger.info("======================== Starting NoventGetTest ========================");
-    	PrepareTestUtils.cleanUserNoventTable();
-    	PrepareTestUtils.cleanNoventTable();
-    	PrepareTestUtils.cleanUserTable();
+    	prepareTestUtils.cleanUserNoventTable();
+    	prepareTestUtils.cleanNoventTable();
+    	prepareTestUtils.cleanUserTable();
 
-    	insertedUser = PrepareTestUtils.insertTestUser();
+    	insertedUser = prepareTestUtils.insertTestUser();
 	}
     
 	@Before
@@ -116,9 +118,9 @@ private static Logger logger = LoggerFactory.getLogger(SignUpTest.class);
 	
 	@AfterClass
    	public static void endingAllTests() {
-    	PrepareTestUtils.cleanUserNoventTable();
-       	PrepareTestUtils.cleanNoventTable();
-       	PrepareTestUtils.cleanUserTable();
+		prepareTestUtils.cleanUserNoventTable();
+		prepareTestUtils.cleanNoventTable();
+		prepareTestUtils.cleanUserTable();
        	logger.info("======================== Ending NoventGetTest ========================");
    	}
 }

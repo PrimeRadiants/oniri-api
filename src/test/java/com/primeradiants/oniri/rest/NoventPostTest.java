@@ -53,14 +53,16 @@ public class NoventPostTest {
 	private static NoventEntity insertedNovent;
 	private static UserEntity insertedUser;
 	
+	private static final PrepareTestUtils prepareTestUtils = new PrepareTestUtils(); 
+	
 	@BeforeClass
 	public static void initAllTests() {
     	logger.info("======================== Starting NoventPostTest ========================");
-    	PrepareTestUtils.cleanUserNoventTable();
-    	PrepareTestUtils.cleanNoventTable();
-    	PrepareTestUtils.cleanUserTable();
-    	insertedNovent = PrepareTestUtils.insertTestNovent();
-    	insertedUser = PrepareTestUtils.insertTestUser();
+    	prepareTestUtils.cleanUserNoventTable();
+    	prepareTestUtils.cleanNoventTable();
+    	prepareTestUtils.cleanUserTable();
+    	insertedNovent = prepareTestUtils.insertTestNovent();
+    	insertedUser = prepareTestUtils.insertTestUser();
 	}
     
     @Before
@@ -113,7 +115,7 @@ public class NoventPostTest {
         this.mockMvc.perform(builder)
                     .andExpect(ok);
         
-        PrepareTestUtils.cleanUserNoventTable();
+        prepareTestUtils.cleanUserNoventTable();
     }
     
     @Test
@@ -141,7 +143,7 @@ public class NoventPostTest {
     @Test
     public void LinkBetweenNoventAndUserCanBeCreatedOnlyOneTime() throws Exception {
     	//starting with a clean table
-    	PrepareTestUtils.cleanUserNoventTable();
+    	prepareTestUtils.cleanUserNoventTable();
     	
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/rest/api/novent/" + insertedNovent.getId()).with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD));
         this.mockMvc.perform(builder);
@@ -164,9 +166,9 @@ public class NoventPostTest {
 	
     @AfterClass
 	public static void endingAllTests() {
-    	PrepareTestUtils.cleanUserNoventTable();
-    	PrepareTestUtils.cleanNoventTable();
-    	PrepareTestUtils.cleanUserTable();
+    	prepareTestUtils.cleanUserNoventTable();
+    	prepareTestUtils.cleanNoventTable();
+    	prepareTestUtils.cleanUserTable();
     	logger.info("======================== Ending NoventPostTest ========================");
 	}
 }
