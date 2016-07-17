@@ -3,8 +3,8 @@
 Oniri is a novent distributor service offered by [Prime Radiants](https://prime-radiants.com). User can purchase and read short stories augmented with music, sounds and animations.
 
 # Oniri API
-[![Build Status](https://travis-ci.org/PrimeRadiants/oniri-api.svg?branch=develop)](https://travis-ci.org/PrimeRadiants/oniri-api)
-[![Coverage Status](https://coveralls.io/repos/github/PrimeRadiants/oniri-api/badge.svg?branch=develop)](https://coveralls.io/github/PrimeRadiants/oniri-api?branch=develop)
+[![Build Status](https://travis-ci.org/PrimeRadiants/oniri-api.svg)](https://travis-ci.org/PrimeRadiants/oniri-api)
+[![Coverage Status](https://coveralls.io/repos/github/PrimeRadiants/oniri-api/badge.svg)](https://coveralls.io/github/PrimeRadiants/oniri-api?branch=develop)
 
 Java based REST API underlying Oniri platform. This API should be consumed by Oniri mobile and desktop clients.
 
