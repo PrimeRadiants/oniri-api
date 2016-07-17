@@ -27,7 +27,7 @@ script:
 - mvn javadoc:javadoc
 - apidoc -o target/site/restapidocs
 after_success:
-- curl --upload-file target/*.war "http://$TOMCAT_USER:$TOMCAT_PASSWORD@164.132.45.5:8080/manager/text/deploy?path=/v1&update=true"
+- if [ "$TRAVIS_BRANCH" = "master" ]; then curl --upload-file target/*.war "http://$TOMCAT_USER:$TOMCAT_PASSWORD@164.132.45.5:8080/manager/text/deploy?path=/v1&update=true"; fi
 - cd target/site/apidocs/
 - find -type f -exec curl --ftp-create-dirs -T {} -u $FTP_USER:$FTP_PASSWORD ftp://ftp.cluster007.ovh.net/doc/oniri/java/$TRAVIS_BRANCH/$VERSION/{}
   \;
