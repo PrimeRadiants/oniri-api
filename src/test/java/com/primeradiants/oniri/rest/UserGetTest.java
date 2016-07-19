@@ -70,7 +70,7 @@ private static Logger logger = LoggerFactory.getLogger(SignUpTest.class);
     public void UserReturns401WhenNotLoggedIn() throws Exception {
     	ResultMatcher unauthorized = MockMvcResultMatchers.status().isUnauthorized();
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/user");
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/user").secure(true);
         this.mockMvc.perform(builder)
                     .andExpect(unauthorized);
     }
@@ -79,7 +79,7 @@ private static Logger logger = LoggerFactory.getLogger(SignUpTest.class);
     public void UserReturns401WithNonExistingUser() throws Exception {
     	ResultMatcher unauthorized = MockMvcResultMatchers.status().isUnauthorized();
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/user").with(httpBasic(PrepareTestUtils.USER_USERNAME + "1", PrepareTestUtils.USER_PASSWORD));
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/user").with(httpBasic(PrepareTestUtils.USER_USERNAME + "1", PrepareTestUtils.USER_PASSWORD)).secure(true);
         this.mockMvc.perform(builder)
                     .andExpect(unauthorized);
     }
@@ -88,7 +88,7 @@ private static Logger logger = LoggerFactory.getLogger(SignUpTest.class);
     public void UserReturnsOkWhenLoggedInWithExistingUser() throws Exception {
     	ResultMatcher ok = MockMvcResultMatchers.status().isOk();
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/user").with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD));
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/user").with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD)).secure(true);
         this.mockMvc.perform(builder)
                     .andExpect(ok);
     }
@@ -97,7 +97,7 @@ private static Logger logger = LoggerFactory.getLogger(SignUpTest.class);
     public void UserReturnsUtf8Json() throws Exception {
         ResultMatcher json = MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8);
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/user").with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD));
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/user").with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD)).secure(true);
         this.mockMvc.perform(builder)
                     .andExpect(json);
     }
@@ -111,7 +111,7 @@ private static Logger logger = LoggerFactory.getLogger(SignUpTest.class);
     	
         ResultMatcher jsonMatcher = MockMvcResultMatchers.content().json(expectedJson.toString());
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/user").with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD));
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/user").with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD)).secure(true);
         this.mockMvc.perform(builder)
                     .andExpect(jsonMatcher);
     }

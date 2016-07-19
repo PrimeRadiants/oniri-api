@@ -313,7 +313,8 @@ public class SignUpTest {
     	
     	MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/signUp")
         		.contentType(MediaType.APPLICATION_JSON_UTF8)
-        		.content(request.toString());
+        		.content(request.toString())
+        		.secure(true);
     	
     	return this.mockMvc.perform(builder);
     }

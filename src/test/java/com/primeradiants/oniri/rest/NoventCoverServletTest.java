@@ -68,7 +68,7 @@ public class NoventCoverServletTest {
     public void NoventCoverServletReturns401WhenNotLoggedIn() throws Exception {
     	ResultMatcher unauthorized = MockMvcResultMatchers.status().isUnauthorized();
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/cover/" + insertedNovent.getId());
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/cover/" + insertedNovent.getId()).secure(true);
         this.mockMvc.perform(builder)
                     .andExpect(unauthorized);
     }
@@ -77,7 +77,7 @@ public class NoventCoverServletTest {
     public void NoventCoverServletReturns401WithNonExistingUser() throws Exception {
     	ResultMatcher unauthorized = MockMvcResultMatchers.status().isUnauthorized();
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/cover/" + insertedNovent.getId()).with(httpBasic(PrepareTestUtils.USER_USERNAME + "1", PrepareTestUtils.USER_PASSWORD));
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/cover/" + insertedNovent.getId()).with(httpBasic(PrepareTestUtils.USER_USERNAME + "1", PrepareTestUtils.USER_PASSWORD)).secure(true);
         this.mockMvc.perform(builder)
                     .andExpect(unauthorized);
     }
@@ -86,7 +86,7 @@ public class NoventCoverServletTest {
     public void NoventCoverServletReturns400ResponseForInvalidID() throws Exception {
     	ResultMatcher badRequest = MockMvcResultMatchers.status().isBadRequest();
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/cover/" + (insertedNovent.getId() + 1)).with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD));
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/cover/" + (insertedNovent.getId() + 1)).with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD)).secure(true);
         this.mockMvc.perform(builder)
                     .andExpect(badRequest);
     }
@@ -95,14 +95,14 @@ public class NoventCoverServletTest {
     public void NoventCoverServletReturnsOkResponseForExistingID() throws Exception {
     	ResultMatcher ok = MockMvcResultMatchers.status().isOk();
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/cover/" + insertedNovent.getId()).with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD));
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/cover/" + insertedNovent.getId()).with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD)).secure(true);
         this.mockMvc.perform(builder)
                     .andExpect(ok);
     }
     
     @Test
     public void NoventCoverServletReturnsCoverImage() throws Exception {
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/cover/" + insertedNovent.getId()).with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD));
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/cover/" + insertedNovent.getId()).with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD)).secure(true);
         
         byte[] returnedBytes = this.mockMvc.perform(builder).andReturn().getResponse().getContentAsByteArray();
         

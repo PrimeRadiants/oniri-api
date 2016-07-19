@@ -74,7 +74,7 @@ public class NoventServletTest {
     public void NoventServletReturns401WhenNotLoggedIn() throws Exception {
     	ResultMatcher unauthorized = MockMvcResultMatchers.status().isUnauthorized();
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/" + insertedNovent.getId() + "/index.html");
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/" + insertedNovent.getId() + "/index.html").secure(true);
         this.mockMvc.perform(builder)
                     .andExpect(unauthorized);
     }
@@ -83,7 +83,7 @@ public class NoventServletTest {
     public void NoventServletReturns401WithNonExistingUser() throws Exception {
     	ResultMatcher unauthorized = MockMvcResultMatchers.status().isUnauthorized();
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/" + insertedNovent.getId() + "/index.html").with(httpBasic(PrepareTestUtils.USER_USERNAME + "1", PrepareTestUtils.USER_PASSWORD));
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/" + insertedNovent.getId() + "/index.html").with(httpBasic(PrepareTestUtils.USER_USERNAME + "1", PrepareTestUtils.USER_PASSWORD)).secure(true);
         this.mockMvc.perform(builder)
                     .andExpect(unauthorized);
     }
@@ -92,7 +92,7 @@ public class NoventServletTest {
     public void NoventServletReturns404ResponseForInvalidID() throws Exception {
     	ResultMatcher notFound = MockMvcResultMatchers.status().isNotFound();
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/" + (insertedNovent.getId() + 1) + "/index.html").with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD));
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/" + (insertedNovent.getId() + 1) + "/index.html").with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD)).secure(true);
         this.mockMvc.perform(builder)
                     .andExpect(notFound);
     }
@@ -101,7 +101,7 @@ public class NoventServletTest {
     public void NoventServletReturns403ResponseForExistingIDButNotOwnedNovent() throws Exception {
     	ResultMatcher forbiden = MockMvcResultMatchers.status().isForbidden();
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/" + insertedNovent.getId() + "/index.html").with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD));
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/" + insertedNovent.getId() + "/index.html").with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD)).secure(true);
         ResultActions result = this.mockMvc.perform(builder);
         
         result.andExpect(forbiden);
@@ -112,7 +112,7 @@ public class NoventServletTest {
     	prepareTestUtils.createUserNoventLink(insertedUser, insertedNovent);
     	ResultMatcher ok = MockMvcResultMatchers.status().isOk();
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/" + insertedNovent.getId() + "/index.html").with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD));
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/" + insertedNovent.getId() + "/index.html").with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD)).secure(true);
         ResultActions result = this.mockMvc.perform(builder);
         
         result.andExpect(ok);
@@ -123,7 +123,7 @@ public class NoventServletTest {
     @Test
     public void NoventServletReturnsNoventFile() throws Exception {
     	prepareTestUtils.createUserNoventLink(insertedUser, insertedNovent);
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/" + insertedNovent.getId() + "/index.html").with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD));
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/" + insertedNovent.getId() + "/index.html").with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD)).secure(true);
 
         byte[] returnedBytes = this.mockMvc.perform(builder).andReturn().getResponse().getContentAsByteArray();
         
