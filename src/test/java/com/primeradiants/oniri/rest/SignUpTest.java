@@ -92,6 +92,24 @@ public class SignUpTest {
         		.addFilters(springSecurityFilterChain)
         		.build();
     }
+    
+    @Test
+    public void SignUpReturns302WhenNotSecured() throws Exception {
+    	ResultMatcher redirection = MockMvcResultMatchers.status().is3xxRedirection();
+
+        JSONObject request = new JSONObject();
+    	request.put(USERNAME, VALID_USERNAME);
+    	request.put(PASSWORD, VALID_PASSWORD);
+    	request.put(EMAIL, VALID_EMAIL);
+    	
+    	MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/signUp")
+        		.contentType(MediaType.APPLICATION_JSON_UTF8)
+        		.content(request.toString())
+        		.secure(false);
+        		
+        this.mockMvc.perform(builder)
+                    .andExpect(redirection);
+    }
 
     @Test
     public void SignUpReturnsOkWithValidArguments() throws Exception {    	

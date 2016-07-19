@@ -82,6 +82,15 @@ public class NoventListGetTest {
     }
     
     @Test
+    public void NoventListReturns302WhenNotSecured() throws Exception {
+    	ResultMatcher redirection = MockMvcResultMatchers.status().is3xxRedirection();
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/novent/list").with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD)).secure(false);
+        this.mockMvc.perform(builder)
+                    .andExpect(redirection);
+    }
+    
+    @Test
     public void NoventListReturnsOkWhenLoggedInWithExistingUser() throws Exception {
     	ResultMatcher ok = MockMvcResultMatchers.status().isOk();
 

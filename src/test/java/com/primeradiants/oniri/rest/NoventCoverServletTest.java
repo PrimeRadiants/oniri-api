@@ -92,6 +92,15 @@ public class NoventCoverServletTest {
     }
     
     @Test
+    public void NoventCoverServletReturns302WhenNotSecured() throws Exception {
+    	ResultMatcher redirection = MockMvcResultMatchers.status().is3xxRedirection();
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/cover/" + insertedNovent.getId()).with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD)).secure(false);
+        this.mockMvc.perform(builder)
+                    .andExpect(redirection);
+    }
+    
+    @Test
     public void NoventCoverServletReturnsOkResponseForExistingID() throws Exception {
     	ResultMatcher ok = MockMvcResultMatchers.status().isOk();
 

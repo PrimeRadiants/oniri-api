@@ -108,6 +108,17 @@ public class NoventPostTest {
     }
     
     @Test
+    public void NoventReturns302WhenNotSeccured() throws Exception {
+    	ResultMatcher redirection = MockMvcResultMatchers.status().is3xxRedirection();
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/rest/api/novent/" + insertedNovent.getId()).with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD)).secure(false);
+        this.mockMvc.perform(builder)
+                    .andExpect(redirection);
+        
+        prepareTestUtils.cleanUserNoventTable();
+    }
+    
+    @Test
     public void NoventReturnsOkResponseForExistingID() throws Exception {
     	ResultMatcher ok = MockMvcResultMatchers.status().isOk();
 

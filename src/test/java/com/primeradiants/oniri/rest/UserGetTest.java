@@ -83,6 +83,15 @@ private static Logger logger = LoggerFactory.getLogger(SignUpTest.class);
         this.mockMvc.perform(builder)
                     .andExpect(unauthorized);
     }
+	
+	@Test
+    public void UserReturns302WhenNotSecured() throws Exception {
+    	ResultMatcher redirection = MockMvcResultMatchers.status().is3xxRedirection();
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/user").with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD)).secure(false);
+        this.mockMvc.perform(builder)
+                    .andExpect(redirection);
+    }
     
     @Test
     public void UserReturnsOkWhenLoggedInWithExistingUser() throws Exception {

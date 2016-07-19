@@ -108,6 +108,19 @@ public class NoventServletTest {
     }
     
     @Test
+    public void NoventServletReturns302WhenNotSecured() throws Exception {
+    	prepareTestUtils.createUserNoventLink(insertedUser, insertedNovent);
+    	ResultMatcher redirection = MockMvcResultMatchers.status().is3xxRedirection();
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/" + insertedNovent.getId() + "/index.html").with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD)).secure(false);
+        ResultActions result = this.mockMvc.perform(builder);
+        
+        result.andExpect(redirection);
+        
+        prepareTestUtils.cleanUserNoventTable();
+    }
+    
+    @Test
     public void NoventServletReturnsOkResponseForExistingID() throws Exception {
     	prepareTestUtils.createUserNoventLink(insertedUser, insertedNovent);
     	ResultMatcher ok = MockMvcResultMatchers.status().isOk();
