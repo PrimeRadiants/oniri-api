@@ -125,9 +125,11 @@ private static Logger logger = LoggerFactory.getLogger(NoventPostTest.class);
     	authors.put(PrepareTestUtils.NOVENT_AUTHOR);
     	novent.put("authors", authors);
     	novent.put("publication", insertedNovent.getPublication().getTime());
+    	novent.put("userOwn", true);
     	
     	novents.put(novent);
     	expectedJson.put("novents", novents);
+    	
     	
         ResultMatcher noventMatcher = MockMvcResultMatchers.content().json(expectedJson.toString());
 

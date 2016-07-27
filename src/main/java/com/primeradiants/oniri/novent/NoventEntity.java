@@ -60,4 +60,26 @@ public class NoventEntity {
 	//File system URI to the corresponding .novent file
 	@Column
 	private String noventPath;
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		NoventEntity other = (NoventEntity) obj;
+		if (id != other.id)
+			return false;
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		return result;
+	}
 }

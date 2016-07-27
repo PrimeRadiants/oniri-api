@@ -28,6 +28,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.primeradiants.oniri.config.ApplicationConfig;
 import com.primeradiants.oniri.novent.NoventEntity;
+import com.primeradiants.oniri.user.UserEntity;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -42,6 +43,7 @@ private static Logger logger = LoggerFactory.getLogger(NoventGetTest.class);
 	private Filter springSecurityFilterChain;
     private MockMvc mockMvc;
 	private static NoventEntity insertedNovent;
+	private static UserEntity insertedUser;
 	
 	private static final PrepareTestUtils prepareTestUtils = new PrepareTestUtils(); 
 	
@@ -52,7 +54,7 @@ private static Logger logger = LoggerFactory.getLogger(NoventGetTest.class);
     	prepareTestUtils.cleanNoventTable();
     	prepareTestUtils.cleanUserTable();
     	insertedNovent = prepareTestUtils.insertTestNovent();
-    	prepareTestUtils.insertTestUser();
+    	insertedUser = prepareTestUtils.insertTestUser();
 	}
     
 	@Before
@@ -151,6 +153,51 @@ private static Logger logger = LoggerFactory.getLogger(NoventGetTest.class);
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/novent/" + insertedNovent.getId()).with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD)).secure(true);
         this.mockMvc.perform(builder)
                     .andExpect(noventMatcher);
+    }
+    
+    @Test
+    public void NoventReturnsNoventNotOwnInDatabase() throws Exception {
+    	JSONObject novent = new JSONObject();
+    	
+    	novent.put("id", insertedNovent.getId());
+    	novent.put("title", PrepareTestUtils.NOVENT_TITLE);
+    	novent.put("description", PrepareTestUtils.NOVENT_DESCRIPTION);
+    	
+    	JSONArray authors = new JSONArray();
+    	authors.put(PrepareTestUtils.NOVENT_AUTHOR);
+    	novent.put("authors", authors);
+    	novent.put("publication", insertedNovent.getPublication().getTime());
+    	novent.put("userOwn", false);
+    	    	
+        ResultMatcher noventMatcher = MockMvcResultMatchers.content().json(novent.toString());
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/novent/" + insertedNovent.getId()).with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD)).secure(true);
+        this.mockMvc.perform(builder)
+                    .andExpect(noventMatcher);
+    }
+    
+    @Test
+    public void NoventReturnsNoventOwnInDatabase() throws Exception {
+    	prepareTestUtils.createUserNoventLink(insertedUser, insertedNovent);
+    	JSONObject novent = new JSONObject();
+    	
+    	novent.put("id", insertedNovent.getId());
+    	novent.put("title", PrepareTestUtils.NOVENT_TITLE);
+    	novent.put("description", PrepareTestUtils.NOVENT_DESCRIPTION);
+    	
+    	JSONArray authors = new JSONArray();
+    	authors.put(PrepareTestUtils.NOVENT_AUTHOR);
+    	novent.put("authors", authors);
+    	novent.put("publication", insertedNovent.getPublication().getTime());
+    	novent.put("userOwn", true);
+    	    	
+        ResultMatcher noventMatcher = MockMvcResultMatchers.content().json(novent.toString());
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/novent/" + insertedNovent.getId()).with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD)).secure(true);
+        this.mockMvc.perform(builder)
+                    .andExpect(noventMatcher);
+        
+        prepareTestUtils.cleanUserNoventTable();
     }
     
     @AfterClass
