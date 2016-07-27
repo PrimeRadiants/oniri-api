@@ -95,6 +95,12 @@ public class NoventManager {
 		return result;
 	}
 	
+	/**
+	 * Create a link between a user and a novent he just purchased
+	 * @param user The user that will own the novent
+	 * @param novent The novent that will be owned
+	 * @return The object representing the link between user and novent
+	 */
 	public UserNoventEntity createUserNoventLink(UserEntity user, NoventEntity novent) {
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();
@@ -118,6 +124,12 @@ public class NoventManager {
 		return userNoventEntity;
 	}
 	
+	/**
+	 * Check if a user own a particular novent
+	 * @param user The user
+	 * @param novent The novent
+	 * @return a boolean value
+	 */
 	public boolean doesUserOwnNovent(UserEntity user, NoventEntity novent) {
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();

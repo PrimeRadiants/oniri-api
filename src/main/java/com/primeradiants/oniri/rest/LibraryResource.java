@@ -67,7 +67,7 @@ public class LibraryResource {
 		List<NoventResponse> response = new ArrayList<NoventResponse>();
 		
 		for(NoventEntity novent : novents)
-			response.add(new NoventResponse(novent.getId(), novent.getTitle(), novent.getAuthors(), new Date(novent.getPublication().getTime())));
+			response.add(new NoventResponse(novent.getId(), novent.getTitle(), novent.getAuthors(), new Date(novent.getPublication().getTime()), true));
 		
 		return ResponseEntity.ok(new NoventListResponse(response));
 	}
