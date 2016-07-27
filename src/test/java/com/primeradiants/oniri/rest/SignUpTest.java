@@ -31,6 +31,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.primeradiants.hibernate.util.HibernateUtil;
 import com.primeradiants.oniri.config.ApplicationConfig;
+import com.primeradiants.oniri.test.utils.PrepareTestUtils;
 import com.primeradiants.oniri.user.UserEntity;
 
 @RunWith(SpringJUnit4ClassRunner.class)

@@ -1,4 +1,4 @@
-package com.primeradiants.oniri.rest;
+package com.primeradiants.oniri.test.utils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,6 +24,10 @@ public class PrepareTestUtils {
 	public final static String USER_USERNAME = "gabitbol";
 	public final static String USER_EMAIL = "george.abitbol@prime-radiants.com";
 	public final static String USER_PASSWORD = "password";
+	
+	public final static String ADMIN_USER_USERNAME = "gbiaux";
+	public final static String ADMIN_USER_EMAIL = "georges.biaux@prime-radiants.com";
+	public final static String ADMIN_USER_PASSWORD = "password";
 	
 	public final static String NOVENT_TITLE = "Novent title";
 	public final static String NOVENT_DESCRIPTION = "Novent description";
@@ -79,7 +83,24 @@ public class PrepareTestUtils {
 	}
 	
 	public UserEntity insertTestUser() {
-		UserEntity user = new UserEntity(0, USER_USERNAME, USER_EMAIL, USER_PASSWORD, new Date());
+		UserEntity user = new UserEntity(0, USER_USERNAME, USER_EMAIL, USER_PASSWORD, new Date(), false);
+		Session session = sessionFactory.openSession();
+		
+		session.beginTransaction();
+		session.save(user);
+		session.getTransaction().commit();
+		session.close();
+		
+		session = sessionFactory.openSession();
+		//Getting result directly from database
+		user = (UserEntity) session.get(UserEntity.class, user.getId());
+		
+		session.close();
+		return user;
+	}
+	
+	public UserEntity insertTestAdminUser() {
+		UserEntity user = new UserEntity(0, ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD, new Date(), true);
 		Session session = sessionFactory.openSession();
 		
 		session.beginTransaction();

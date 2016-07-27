@@ -1,6 +1,7 @@
 package com.primeradiants.oniri.user;
 
 import java.util.Date;
+import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -33,8 +34,8 @@ public class UserManager {
 	 * @param password the password of the new user (will be hashed)
 	 * @return the newly created UserEntity
 	 */
-	public UserEntity createUser(String username, String email, String password) {
-		UserEntity user = new UserEntity(0, username, email, passwordEncoder.encode(password), new Date());
+	public UserEntity createUser(String username, String email, String password, Boolean admin) {
+		UserEntity user = new UserEntity(0, username, email, passwordEncoder.encode(password), new Date(), admin);
 		
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();
@@ -43,6 +44,24 @@ public class UserManager {
 		session.getTransaction().commit();
 		
 		return user;
+	}
+	
+	/**
+	 * Returns all the Oniri users in database
+	 * @return all the Oniri users
+	 */
+	public List<UserEntity> getAllUsers() {
+		Session session = sessionFactory.getCurrentSession();
+		session.beginTransaction();
+		
+		Criteria criteria = session
+			    .createCriteria(UserEntity.class);
+		
+		@SuppressWarnings("unchecked")
+		List<UserEntity> users = (List<UserEntity>) criteria.list();
+		session.getTransaction().commit();
+		
+		return users;
 	}
 	
 	/**

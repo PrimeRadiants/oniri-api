@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.primeradiants.oniri.config.ApplicationConfig;
+import com.primeradiants.oniri.test.utils.PrepareTestUtils;
 import com.primeradiants.oniri.user.UserEntity;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -33,7 +34,7 @@ import com.primeradiants.oniri.user.UserEntity;
 @ContextConfiguration(classes = ApplicationConfig.class)
 public class UserGetTest {
 
-private static Logger logger = LoggerFactory.getLogger(SignUpTest.class);
+	private static Logger logger = LoggerFactory.getLogger(UserGetTest.class);
 	
 	@Autowired
     private WebApplicationContext webApplicationContext;

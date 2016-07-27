@@ -36,6 +36,7 @@ import com.primeradiants.hibernate.util.HibernateUtil;
 import com.primeradiants.oniri.config.ApplicationConfig;
 import com.primeradiants.oniri.novent.NoventEntity;
 import com.primeradiants.oniri.novent.UserNoventEntity;
+import com.primeradiants.oniri.test.utils.PrepareTestUtils;
 import com.primeradiants.oniri.user.UserEntity;
 
 @RunWith(SpringJUnit4ClassRunner.class)

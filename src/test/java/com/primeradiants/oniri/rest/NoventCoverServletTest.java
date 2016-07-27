@@ -29,6 +29,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.primeradiants.oniri.config.ApplicationConfig;
 import com.primeradiants.oniri.novent.NoventEntity;
+import com.primeradiants.oniri.test.utils.PrepareTestUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
