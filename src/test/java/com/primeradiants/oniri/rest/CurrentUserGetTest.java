@@ -32,9 +32,9 @@ import com.primeradiants.oniri.user.UserEntity;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = ApplicationConfig.class)
-public class UserGetTest {
+public class CurrentUserGetTest {
 
-	private static Logger logger = LoggerFactory.getLogger(UserGetTest.class);
+	private static Logger logger = LoggerFactory.getLogger(CurrentUserGetTest.class);
 	
 	@Autowired
     private WebApplicationContext webApplicationContext;

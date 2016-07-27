@@ -27,16 +27,15 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.primeradiants.oniri.config.ApplicationConfig;
-import com.primeradiants.oniri.rest.CurrentUserGetTest;
 import com.primeradiants.oniri.test.utils.PrepareTestUtils;
 import com.primeradiants.oniri.user.UserEntity;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = ApplicationConfig.class)
-public class UserListGetTest {
+public class UserGetTest {
 
-	private static Logger logger = LoggerFactory.getLogger(CurrentUserGetTest.class);
+	private static Logger logger = LoggerFactory.getLogger(UserGetTest.class);
 	
 	@Autowired
     private WebApplicationContext webApplicationContext;
@@ -50,11 +49,13 @@ public class UserListGetTest {
     private final static String EMAIL = "email";
     private final static String CREATED = "created";
     
+    private final static String ENDPOINT_PATH = "/admin/api/user/";
+    
     private static final PrepareTestUtils prepareTestUtils = new PrepareTestUtils(); 
 	
     @BeforeClass
 	public static void initAllTests() {
-    	logger.info("======================== Starting UserListGetTest ========================");
+    	logger.info("======================== Starting UserGetTest ========================");
     	prepareTestUtils.cleanUserNoventTable();
     	prepareTestUtils.cleanNoventTable();
     	prepareTestUtils.cleanUserTable();
@@ -75,76 +76,75 @@ public class UserListGetTest {
     public void UserListReturns401WhenNotLoggedIn() throws Exception {
     	ResultMatcher unauthorized = MockMvcResultMatchers.status().isUnauthorized();
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/admin/api/user/list").secure(true);
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get(ENDPOINT_PATH + PrepareTestUtils.USER_USERNAME).secure(true);
         this.mockMvc.perform(builder)
                     .andExpect(unauthorized);
     }
 	
 	@Test
-    public void UserListReturns401WithNonExistingUser() throws Exception {
+    public void UserReturns401WithNonExistingUser() throws Exception {
     	ResultMatcher unauthorized = MockMvcResultMatchers.status().isUnauthorized();
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/admin/api/user/list").with(httpBasic(PrepareTestUtils.USER_USERNAME + "1", PrepareTestUtils.USER_PASSWORD)).secure(true);
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get(ENDPOINT_PATH + PrepareTestUtils.USER_USERNAME).with(httpBasic(PrepareTestUtils.USER_USERNAME + "1", PrepareTestUtils.USER_PASSWORD)).secure(true);
         this.mockMvc.perform(builder)
                     .andExpect(unauthorized);
     }
 	
 	@Test
-    public void UserListReturns403WithNonAdminUser() throws Exception {
+    public void UserReturns403WithNonAdminUser() throws Exception {
     	ResultMatcher forbiden = MockMvcResultMatchers.status().isForbidden();
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/admin/api/user/list").with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD)).secure(true);
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get(ENDPOINT_PATH + PrepareTestUtils.USER_USERNAME).with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD)).secure(true);
         this.mockMvc.perform(builder)
                     .andExpect(forbiden);
     }
 	
 	@Test
-    public void UserListReturns302WhenNotSecured() throws Exception {
+    public void UserReturns302WhenNotSecured() throws Exception {
     	ResultMatcher redirection = MockMvcResultMatchers.status().is3xxRedirection();
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/admin/api/user/list").with(httpBasic(PrepareTestUtils.ADMIN_USER_USERNAME, PrepareTestUtils.ADMIN_USER_PASSWORD)).secure(false);
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get(ENDPOINT_PATH + PrepareTestUtils.USER_USERNAME).with(httpBasic(PrepareTestUtils.ADMIN_USER_USERNAME, PrepareTestUtils.ADMIN_USER_PASSWORD)).secure(false);
         this.mockMvc.perform(builder)
                     .andExpect(redirection);
     }
 	
 	@Test
-    public void UserListReturnsOkWhenLoggedInWithExistingAdminUser() throws Exception {
+    public void UserReturns400WhenRequestingNonExistingUser() throws Exception {
+    	ResultMatcher badRequest = MockMvcResultMatchers.status().isBadRequest();
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get(ENDPOINT_PATH + PrepareTestUtils.USER_USERNAME + "1").with(httpBasic(PrepareTestUtils.ADMIN_USER_USERNAME, PrepareTestUtils.ADMIN_USER_PASSWORD)).secure(true);
+        this.mockMvc.perform(builder)
+                    .andExpect(badRequest);
+    }
+	
+	@Test
+    public void UserReturnsOkWhenLoggedInWithExistingAdminUserAndExistingRequestedUser() throws Exception {
     	ResultMatcher ok = MockMvcResultMatchers.status().isOk();
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/admin/api/user/list").with(httpBasic(PrepareTestUtils.ADMIN_USER_USERNAME, PrepareTestUtils.ADMIN_USER_PASSWORD)).secure(true);
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get(ENDPOINT_PATH + PrepareTestUtils.USER_USERNAME).with(httpBasic(PrepareTestUtils.ADMIN_USER_USERNAME, PrepareTestUtils.ADMIN_USER_PASSWORD)).secure(true);
         this.mockMvc.perform(builder)
                     .andExpect(ok);
     }
 	
 	@Test
-    public void UserListReturnsUtf8Json() throws Exception {
+    public void UserReturnsUtf8Json() throws Exception {
         ResultMatcher json = MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8);
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/admin/api/user/list").with(httpBasic(PrepareTestUtils.ADMIN_USER_USERNAME, PrepareTestUtils.ADMIN_USER_PASSWORD)).secure(true);
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get(ENDPOINT_PATH + PrepareTestUtils.USER_USERNAME).with(httpBasic(PrepareTestUtils.ADMIN_USER_USERNAME, PrepareTestUtils.ADMIN_USER_PASSWORD)).secure(true);
         this.mockMvc.perform(builder)
                     .andExpect(json);
     }
 	
 	@Test
-    public void UserListReturnsUsersInDatabase() throws Exception {
-		JSONArray expectedJson = new JSONArray();
-    	
+    public void UserReturnsRequestedUser() throws Exception {
     	JSONObject user = new JSONObject();
     	user.put(USERNAME, PrepareTestUtils.USER_USERNAME);
     	user.put(EMAIL, PrepareTestUtils.USER_EMAIL);
     	user.put(CREATED, insertedUser.getCreated().getTime());
-    	
-    	JSONObject adminUser = new JSONObject();
-    	user.put(USERNAME, PrepareTestUtils.ADMIN_USER_USERNAME);
-    	user.put(EMAIL, PrepareTestUtils.ADMIN_USER_EMAIL);
-    	user.put(CREATED, insertedAdminUser.getCreated().getTime());
-    	
-    	expectedJson.put(user);
-    	expectedJson.put(adminUser);
-    	
-        ResultMatcher jsonMatcher = MockMvcResultMatchers.content().json(expectedJson.toString());
+    	    	
+        ResultMatcher jsonMatcher = MockMvcResultMatchers.content().json(user.toString());
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/admin/api/user/list").with(httpBasic(PrepareTestUtils.ADMIN_USER_USERNAME, PrepareTestUtils.ADMIN_USER_PASSWORD)).secure(true);
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get(ENDPOINT_PATH + PrepareTestUtils.USER_USERNAME).with(httpBasic(PrepareTestUtils.ADMIN_USER_USERNAME, PrepareTestUtils.ADMIN_USER_PASSWORD)).secure(true);
         this.mockMvc.perform(builder)
                     .andExpect(jsonMatcher);
     }
@@ -154,6 +154,6 @@ public class UserListGetTest {
 		prepareTestUtils.cleanUserNoventTable();
 		prepareTestUtils.cleanNoventTable();
 		prepareTestUtils.cleanUserTable();
-       	logger.info("======================== Ending UserListGetTest ========================");
+       	logger.info("======================== Ending UserGetTest ========================");
    	}
 }

@@ -1,14 +1,18 @@
 package com.primeradiants.oniri.admin;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.primeradiants.model.errors.ValidationError;
 import com.primeradiants.oniri.rest.UserResource.UserResponse;
 import com.primeradiants.oniri.user.UserEntity;
 import com.primeradiants.oniri.user.UserManager;
@@ -23,6 +27,8 @@ import com.primeradiants.oniri.user.UserManager;
 public class UserAdminResource {
 
 	@Autowired private UserManager userManager;
+	
+	private static final String USERNAME = "username";
 	
 	/**
 	 * @api {get} /admin/api/user/list Request the list of all Oniri users
@@ -58,4 +64,66 @@ public class UserAdminResource {
 		return ResponseEntity.ok(result);
 	}
 	
+	/**
+	 * @api {get} /admin/api/user/{username} Request a user by its username
+	 * @apiName getUser
+	 * @apiGroup User
+	 * @apiVersion 0.1.1
+	 * 
+	 * @apiParam {String} username user name.
+	 * 
+	 * @apiSuccess {String} username Username of the User.
+	 * @apiSuccess {String} email  Email of the User.
+	 * @apiSuccess {Date} created  Creation date the User.
+	 * 
+	 * @apiSuccessExample Success-Response:
+	 *     HTTP/1.1 200 OK
+	 *     {
+	 *       "username": "gabitbol",
+	 *       "email": "george.abitbol@prime-radiants.com",
+	 *       "created": "1468237452"
+	 *     }
+	 *     
+	 * @apiError {Object[]} response
+	 * @apiError {String} response.field Field where lies the input validation error
+	 * @apiError {String} response.error Error description
+	 * 
+	 * @apiErrorExample {json} Error-Response:
+	 *     HTTP/1.1 400 Bad Request
+	 *     [{
+	 *     	"field": "username"
+	 *       "error": "Unknown user user"
+	 *     }]
+	 */
+	/**
+	 * Retrieve a user by its user name
+	 * @param username the user name of the user
+	 * @return a {@link com.primeradiants.oniri.rest.UserResource.UserResponse} if user exists, 
+	 * 			else a Collection of {@link com.primeradiants.model.errors.ValidationError}
+	 */
+	@RequestMapping(value = "/user/{username}", method = RequestMethod.GET)
+	public ResponseEntity<?> getUser(@PathVariable String username) 
+	{
+		final Collection<ValidationError> errors = new ArrayList<ValidationError>();
+		
+		//input validation
+		UserEntity user = validateUsername(username, errors);
+		
+		if (!errors.isEmpty())
+        {
+            return new ResponseEntity<Collection<ValidationError>>(errors, HttpStatus.BAD_REQUEST);
+        }
+		
+		return ResponseEntity.ok(new UserResponse(user.getUsername(), user.getEmail(), user.getCreated()));
+	}
+	
+	//Check if user name corresponds to an existing user in database and return the UserEntity object 
+	private UserEntity validateUsername(String username, Collection<ValidationError> errors) {
+		UserEntity user = userManager.getUser(username);
+		
+		if(user == null)
+			errors.add(new ValidationError(USERNAME, "Unknown user " + username));
+		
+		return user;
+	}
 }
