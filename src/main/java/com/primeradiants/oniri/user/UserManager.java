@@ -109,4 +109,20 @@ public class UserManager {
 		
 		return user;
 	}
+	
+	/**
+	 * Delete the given user in database
+	 * @param user the user to delete
+	 */
+	public void deleteUser(UserEntity user) {
+		if(user == null)
+			return;
+		
+		Session session = sessionFactory.getCurrentSession();
+		session.beginTransaction();
+		
+		session.delete(user);
+		
+		session.getTransaction().commit();
+	}
 }
