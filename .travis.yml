@@ -7,8 +7,6 @@ node_js:
 - '6'
 services:
 - mysql
-sudo: required
-dist: trusty
 env:
   global:
   - VERSION=0.1.1
@@ -21,6 +19,8 @@ env:
 before_install:
 - npm install apidoc -g
 - mysql -u root -e 'create database oniri_test;'
+- mkdir -p /var/primeradiants/oniri-data/novents
+- mkdir -p /tmp/primeradiants/oniri-data
 script:
 - sed -i "s/<property name=\"hibernate.connection.username\">root<\/property>/<property
   name=\"hibernate.connection.username\">$MYSQL_USER<\/property>/g" src/main/resources/hibernate-annotation.cfg.xml
