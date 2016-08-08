@@ -91,7 +91,7 @@ public class NoventManager {
 		
 		session.save(noventEntity);
 		
-		File folder = new File(NOVENT_FOLDER);
+		File folder = new File(NOVENT_FOLDER + noventEntity.getId());
 		folder.mkdirs();
 		
 		File cover = new File(NOVENT_FOLDER + noventEntity.getId() + "/" + coverFile.getName());
