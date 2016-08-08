@@ -30,7 +30,7 @@ public class NoventManager {
 	private static final String ID = "id";
 	private static final String NOVENT = "novent"; 
 	
-	private static final String NOVENT_FOLDER = "/var/primeradiants/oniri-data/novents";
+	private static final String NOVENT_FOLDER = "/var/primeradiants/oniri-data/novents/";
 	
 	/**
 	 * Returns a novent based on id.
