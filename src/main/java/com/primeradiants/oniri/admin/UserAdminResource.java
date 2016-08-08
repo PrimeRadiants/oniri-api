@@ -20,7 +20,7 @@ import com.primeradiants.oniri.user.UserManager;
 /**
  * REST endpoints to administrate ONIRI users
  * @author Shanira
- * @since 0.1.0
+ * @since 0.1.1
  */
 @RestController
 @RequestMapping("/admin/api")
