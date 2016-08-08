@@ -21,7 +21,6 @@ before_install:
 - npm install apidoc -g
 - mysql -u root -e 'create database oniri_test;'
 script:
-- sudo -i
 - sed -i "s/<property name=\"hibernate.connection.username\">root<\/property>/<property
   name=\"hibernate.connection.username\">$MYSQL_USER<\/property>/g" src/main/resources/hibernate-annotation.cfg.xml
 - sed -i "s/<property name=\"hibernate.connection.password\"><\/property>/<property name=\"hibernate.connection.password\">$MYSQL_PASSWORD<\/property>/g" src/main/resources/hibernate-annotation.cfg.xml
