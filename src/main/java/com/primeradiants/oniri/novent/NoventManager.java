@@ -30,6 +30,8 @@ public class NoventManager {
 	private static final String ID = "id";
 	private static final String NOVENT = "novent"; 
 	
+	private static final String NOVENT_FOLDER = "/var/primeradiants/oniri-data/novents";
+	
 	/**
 	 * Returns a novent based on id.
 	 * @param id the id of the novent
@@ -89,10 +91,10 @@ public class NoventManager {
 		
 		session.save(noventEntity);
 		
-		File cover = new File("/oniri-data/novents/" + noventEntity.getId() + "/" + coverFile.getName());
+		File cover = new File(NOVENT_FOLDER + noventEntity.getId() + "/" + coverFile.getName());
 		FileUtils.copyFile(coverFile, cover);
 		
-		File novent = new File("/oniri-data/novents/" + noventEntity.getId() + "/" + noventFile.getName());
+		File novent = new File(NOVENT_FOLDER + noventEntity.getId() + "/" + noventFile.getName());
 		FileUtils.copyFile(noventFile, novent);
 		
 		noventEntity.setCoverPath(cover.getAbsolutePath());

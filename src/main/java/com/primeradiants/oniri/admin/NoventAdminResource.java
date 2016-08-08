@@ -40,6 +40,8 @@ public class NoventAdminResource {
 	private final static String AUTHORS = "authors";
 	private final static String COVER = "cover";
 	private final static String NOVENT = "novent";
+	
+	private final static String TMP_FOLDER = "/tmp/primeradiants/oniri-data/";
 
 	@RequestMapping(value = "/novent", method = RequestMethod.POST)
 	public ResponseEntity<?> addNovent(@RequestParam MultipartFile cover, @RequestParam MultipartFile novent, @RequestBody NoventPostInput input) 
@@ -87,9 +89,9 @@ public class NoventAdminResource {
 			errors.add(new ValidationError(COVER, "Missing file 'cover'"));
 		}
 
-		File folder = new File("/oniri-data/tmp/");
+		File folder = new File(TMP_FOLDER);
 		folder.mkdirs();
-		File coverFile = new File("/oniri-data/tmp/" + cover.getOriginalFilename());
+		File coverFile = new File(TMP_FOLDER + cover.getOriginalFilename());
 		try {
 			cover.transferTo(coverFile);
 		} catch (IllegalStateException | IOException e) {
@@ -109,9 +111,9 @@ public class NoventAdminResource {
 			errors.add(new ValidationError(NOVENT, "Missing file 'novent'"));
 		}
 
-		File folder = new File("/oniri-data/tmp/");
+		File folder = new File(TMP_FOLDER);
 		folder.mkdirs();
-		File noventFile = new File("/oniri-data/tmp/" + novent.getOriginalFilename());
+		File noventFile = new File(TMP_FOLDER + novent.getOriginalFilename());
 		try {
 			novent.transferTo(noventFile);
 		} catch (IllegalStateException | IOException e) {
