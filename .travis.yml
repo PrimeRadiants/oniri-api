@@ -17,14 +17,15 @@ env:
   - secure: dPsHYvqUHtV6P5BO9Pi6KarRzs2G1LOXcOTlvaPdTbvl8GMO3/sLTHNEopzdpAr1XRDiTgBQ+GB6Aw3zF7HffLMSkn60ZKG0pTfzefAuNAaUycD/gd4HcTrnpMncVdj29CY4GcLk5FGohQ88eFuuM0len9sJkq3HNGlD74iAcQ1d+jXQ6XN/IiRoFV7hMcrGJucdLwJtVAd1CQuuO2u2prZCq0zgTx0M2Ki/GGemPbAU6dWix/3Parh+kAgU0YVe6cKylFlvCCPglDoIsHddzE6okWTENtOJGr6gE2tgN7BxIVpa9OuVtd5MimDZqpMdkgdv50jNsdgx/dmj41bZY5VcYD1FmVMC2azdTkZ8YMTVayklurnnNiwU4L/p0ilqk8r6+QTtMWHRmeeZFHKycxXNJmXzjRFlNU19VspUF4c5WAyyzEILZ38pFduKhkF36kjVJDf7YOc2hR4Olgb9+lhrAETBuW+iW2GrL//ru5ObsxgL9xaoKbDc3e/QrqhAnBxtM481AReh+hxxpBp3AWaAnFtoHiaMIGTocqlpRm9HNQE3A5Bc0zmoaJtEqbac3qo3mbVP15qMpMemkUwtJke6VF49tMc4HKxYvH2juLSy8qYu+1y1dW6cnXjfmYCp/Tp1IE2vhpvxeZEtmNXpC6dGQTCpdD+jHcL1psw3Ns4=
   - secure: jzd/dMKA3OlPZNfErLixwb5fRxql+gKOJuAkgZX9xpQCFrR0H5tUEAA1ByNCSEhRAI5vfaYIZI4KZNJTmR7NyGgxkdP426tj4u5QerkQFySQ9wyqQPrEX7sjhMrLpOUGP8vM268fDstNP28aiF4yxtetGWm36XM4Ug60d79RLbxc+joHLIfCyRpx7E5+y/lsfTHo8AdUn2oEsvUrLYoq8Rju42jPNYdUes+i4L4tPB6L+j4ZEOwQ1FOqzLWE6VcEPDK2ZxluxJcv9WgUz1+PXTw0QnPPKVj1e7tHL9yteY1ICg5BBSKJ6P5qJ7iJe3SbupXQK7lI7/eawp2B7sVOmp0JoU1/22Na3xY8PxWCH5PgVSxhXpeSEYON0HvxY+1FRiJ8YaGkLfYz7Fy7H/yWT+cXjURMTQyHXMkCzVpGLtOy34JviCm2zoSzZ2FdUtQp1XouSQpBt0rDLgsTbRYXS/A/4yFkIJD35NI0LNiLnKhTCm3rFhItylZc6RtJRDK64Pq8fKwHguEVeoJmTTECrI9avz7EfPgjP8y+2lh+UZZ5lMSbwEwTU3P41DrPjXOtrKhfyez1d3y56UnhDNbpafpt3P+njmcWXDMewqo553w2pJ5dE4U0yQEuozKOzRAW+qIVLj9frhGY3fHPDxNcYA0CnJ51zhV5Rh68Pd703hw=
 before_install:
+- su
 - npm install apidoc -g
 - mysql -u root -e 'create database oniri_test;'
 script:
 - sed -i "s/<property name=\"hibernate.connection.username\">root<\/property>/<property
   name=\"hibernate.connection.username\">$MYSQL_USER<\/property>/g" src/main/resources/hibernate-annotation.cfg.xml
 - sed -i "s/<property name=\"hibernate.connection.password\"><\/property>/<property name=\"hibernate.connection.password\">$MYSQL_PASSWORD<\/property>/g" src/main/resources/hibernate-annotation.cfg.xml
-- sudo mvn package
-- sudo mvn javadoc:javadoc
+- mvn package
+- mvn javadoc:javadoc
 - apidoc -o target/site/restapidocs
 after_success:
 - if [ "$TRAVIS_BRANCH" = "master" ]; then curl --upload-file target/*.war "http://$TOMCAT_USER:$TOMCAT_PASSWORD@164.132.45.5:8080/manager/text/deploy?path=/v1&update=true"; fi
@@ -39,4 +40,4 @@ after_success:
 - find -type f -exec curl --ftp-create-dirs -T {} -u $FTP_USER:$FTP_PASSWORD ftp://ftp.cluster007.ovh.net/doc/oniri/rest/$TRAVIS_BRANCH/latest/{}
   \;
 - cd ../../..
-- sudo mvn clean cobertura:cobertura coveralls:report
+- mvn clean cobertura:cobertura coveralls:report
