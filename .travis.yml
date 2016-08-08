@@ -7,6 +7,7 @@ node_js:
 - '6'
 services:
 - mysql
+sudo: required
 env:
   global:
   - VERSION=0.1.1
@@ -23,8 +24,8 @@ script:
 - sed -i "s/<property name=\"hibernate.connection.username\">root<\/property>/<property
   name=\"hibernate.connection.username\">$MYSQL_USER<\/property>/g" src/main/resources/hibernate-annotation.cfg.xml
 - sed -i "s/<property name=\"hibernate.connection.password\"><\/property>/<property name=\"hibernate.connection.password\">$MYSQL_PASSWORD<\/property>/g" src/main/resources/hibernate-annotation.cfg.xml
-- mvn package
-- mvn javadoc:javadoc
+- sudo mvn package
+- sudo mvn javadoc:javadoc
 - apidoc -o target/site/restapidocs
 after_success:
 - if [ "$TRAVIS_BRANCH" = "master" ]; then curl --upload-file target/*.war "http://$TOMCAT_USER:$TOMCAT_PASSWORD@164.132.45.5:8080/manager/text/deploy?path=/v1&update=true"; fi
@@ -39,4 +40,4 @@ after_success:
 - find -type f -exec curl --ftp-create-dirs -T {} -u $FTP_USER:$FTP_PASSWORD ftp://ftp.cluster007.ovh.net/doc/oniri/rest/$TRAVIS_BRANCH/latest/{}
   \;
 - cd ../../..
-- mvn clean cobertura:cobertura coveralls:report
+- sudo mvn clean cobertura:cobertura coveralls:report
