@@ -4,7 +4,6 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 
 import javax.servlet.Filter;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -43,7 +42,6 @@ public class UserGetTest {
 	private Filter springSecurityFilterChain;
     private MockMvc mockMvc;
     private static UserEntity insertedUser;
-    private static UserEntity insertedAdminUser;
     
     private final static String USERNAME = "username";
     private final static String EMAIL = "email";
@@ -61,7 +59,7 @@ public class UserGetTest {
     	prepareTestUtils.cleanUserTable();
 
     	insertedUser = prepareTestUtils.insertTestUser();
-    	insertedAdminUser = prepareTestUtils.insertTestAdminUser();
+    	prepareTestUtils.insertTestAdminUser();
 	}
     
 	@Before
