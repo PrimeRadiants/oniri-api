@@ -1,5 +1,7 @@
 package com.primeradiants.oniri.novent;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,6 +15,8 @@ import org.springframework.stereotype.Service;
 import com.primeradiants.hibernate.util.HibernateUtil;
 import com.primeradiants.oniri.user.UserEntity;
 
+import org.apache.commons.io.FileUtils;
+
 /**
  * Simple novent utility.
  * @author Shanira
@@ -25,6 +29,8 @@ public class NoventManager {
 	private static final String USER = "user"; 
 	private static final String ID = "id";
 	private static final String NOVENT = "novent"; 
+	
+	private static final String NOVENT_FOLDER = "/var/primeradiants/oniri-data/novents/";
 	
 	/**
 	 * Returns a novent based on id.
@@ -65,6 +71,42 @@ public class NoventManager {
 		session.getTransaction().commit();
 		
 		return result;
+	}
+	
+	/**
+	 * Persist a new novent in database
+	 * @param title The title of the novent
+	 * @param authors The author list
+	 * @param description The description of the novent
+	 * @param coverFile The cover of the novent
+	 * @param noventFile The novent archive
+	 * @return The {@link com.primeradiants.oniri.novent.NoventEntity}
+	 * @throws IOException 
+	 */
+	public NoventEntity createNoven(String title, List<String> authors, String description, File coverFile, File noventFile) throws IOException {
+		NoventEntity noventEntity = new NoventEntity(0, title, authors, description, new Date(), null, null);
+		
+		Session session = sessionFactory.getCurrentSession();
+		session.beginTransaction();
+		
+		session.save(noventEntity);
+		
+		File folder = new File(NOVENT_FOLDER + noventEntity.getId()+ "/");
+		folder.mkdirs();
+		
+		File cover = new File(NOVENT_FOLDER + noventEntity.getId() + "/" + coverFile.getName());
+		FileUtils.copyFile(coverFile, cover);
+		
+		File novent = new File(NOVENT_FOLDER + noventEntity.getId() + "/" + noventFile.getName());
+		FileUtils.copyFile(noventFile, novent);
+		
+		noventEntity.setCoverPath(cover.getAbsolutePath());
+		noventEntity.setNoventPath(novent.getAbsolutePath());
+		
+		session.saveOrUpdate(noventEntity);
+		session.getTransaction().commit();
+		
+		return noventEntity;
 	}
 	
 	/**

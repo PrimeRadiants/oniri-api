@@ -117,6 +117,48 @@ public class UserAdminResource {
 		return ResponseEntity.ok(new UserResponse(user.getUsername(), user.getEmail(), user.getCreated()));
 	}
 	
+	/**
+	 * @api {delete} /admin/api/user/{username} Delete a user by its username
+	 * @apiName deleteUser
+	 * @apiGroup User
+	 * @apiVersion 0.1.1
+	 * 
+	 * @apiParam {String} username user name.
+	 *  
+	 * @apiError {Object[]} response
+	 * @apiError {String} response.field Field where lies the input validation error
+	 * @apiError {String} response.error Error description
+	 * 
+	 * @apiErrorExample {json} Error-Response:
+	 *     HTTP/1.1 400 Bad Request
+	 *     [{
+	 *     	"field": "username"
+	 *       "error": "Unknown user user"
+	 *     }]
+	 */
+	/**
+	 * Delete a user by its user name
+	 * @param username the user name of the user to delete
+	 * @return else a Collection of {@link com.primeradiants.model.errors.ValidationError} if user do not exist
+	 */
+	@RequestMapping(value = "/user/{username}", method = RequestMethod.DELETE)
+	public ResponseEntity<?> deleteUser(@PathVariable String username) 
+	{
+		final Collection<ValidationError> errors = new ArrayList<ValidationError>();
+		
+		//input validation
+		UserEntity user = validateUsername(username, errors);
+		
+		if (!errors.isEmpty())
+        {
+            return new ResponseEntity<Collection<ValidationError>>(errors, HttpStatus.BAD_REQUEST);
+        }
+		
+		userManager.deleteUser(user);
+		
+		return ResponseEntity.ok().build();
+	}
+	
 	//Check if user name corresponds to an existing user in database and return the UserEntity object 
 	private UserEntity validateUsername(String username, Collection<ValidationError> errors) {
 		UserEntity user = userManager.getUser(username);

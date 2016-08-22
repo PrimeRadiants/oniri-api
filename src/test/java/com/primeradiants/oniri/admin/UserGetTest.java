@@ -71,7 +71,7 @@ public class UserGetTest {
     }
 	
 	@Test
-    public void UserListReturns401WhenNotLoggedIn() throws Exception {
+    public void UserGetListReturns401WhenNotLoggedIn() throws Exception {
     	ResultMatcher unauthorized = MockMvcResultMatchers.status().isUnauthorized();
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get(ENDPOINT_PATH + PrepareTestUtils.USER_USERNAME).secure(true);
@@ -80,7 +80,7 @@ public class UserGetTest {
     }
 	
 	@Test
-    public void UserReturns401WithNonExistingUser() throws Exception {
+    public void UserGetReturns401WithNonExistingUser() throws Exception {
     	ResultMatcher unauthorized = MockMvcResultMatchers.status().isUnauthorized();
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get(ENDPOINT_PATH + PrepareTestUtils.USER_USERNAME).with(httpBasic(PrepareTestUtils.USER_USERNAME + "1", PrepareTestUtils.USER_PASSWORD)).secure(true);
@@ -89,7 +89,7 @@ public class UserGetTest {
     }
 	
 	@Test
-    public void UserReturns403WithNonAdminUser() throws Exception {
+    public void UserGetReturns403WithNonAdminUser() throws Exception {
     	ResultMatcher forbiden = MockMvcResultMatchers.status().isForbidden();
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get(ENDPOINT_PATH + PrepareTestUtils.USER_USERNAME).with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD)).secure(true);
@@ -98,7 +98,7 @@ public class UserGetTest {
     }
 	
 	@Test
-    public void UserReturns302WhenNotSecured() throws Exception {
+    public void UserGetReturns302WhenNotSecured() throws Exception {
     	ResultMatcher redirection = MockMvcResultMatchers.status().is3xxRedirection();
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get(ENDPOINT_PATH + PrepareTestUtils.USER_USERNAME).with(httpBasic(PrepareTestUtils.ADMIN_USER_USERNAME, PrepareTestUtils.ADMIN_USER_PASSWORD)).secure(false);
@@ -107,7 +107,7 @@ public class UserGetTest {
     }
 	
 	@Test
-    public void UserReturns400WhenRequestingNonExistingUser() throws Exception {
+    public void UserGetReturns400WhenRequestingNonExistingUser() throws Exception {
     	ResultMatcher badRequest = MockMvcResultMatchers.status().isBadRequest();
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get(ENDPOINT_PATH + PrepareTestUtils.USER_USERNAME + "1").with(httpBasic(PrepareTestUtils.ADMIN_USER_USERNAME, PrepareTestUtils.ADMIN_USER_PASSWORD)).secure(true);
@@ -116,7 +116,7 @@ public class UserGetTest {
     }
 	
 	@Test
-    public void UserReturnsOkWhenLoggedInWithExistingAdminUserAndExistingRequestedUser() throws Exception {
+    public void UserGetReturnsOkWhenLoggedInWithExistingAdminUserAndExistingRequestedUser() throws Exception {
     	ResultMatcher ok = MockMvcResultMatchers.status().isOk();
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get(ENDPOINT_PATH + PrepareTestUtils.USER_USERNAME).with(httpBasic(PrepareTestUtils.ADMIN_USER_USERNAME, PrepareTestUtils.ADMIN_USER_PASSWORD)).secure(true);
@@ -125,7 +125,7 @@ public class UserGetTest {
     }
 	
 	@Test
-    public void UserReturnsUtf8Json() throws Exception {
+    public void UserGetReturnsUtf8Json() throws Exception {
         ResultMatcher json = MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8);
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get(ENDPOINT_PATH + PrepareTestUtils.USER_USERNAME).with(httpBasic(PrepareTestUtils.ADMIN_USER_USERNAME, PrepareTestUtils.ADMIN_USER_PASSWORD)).secure(true);
@@ -134,7 +134,7 @@ public class UserGetTest {
     }
 	
 	@Test
-    public void UserReturnsRequestedUser() throws Exception {
+    public void UserGetReturnsRequestedUser() throws Exception {
     	JSONObject user = new JSONObject();
     	user.put(USERNAME, PrepareTestUtils.USER_USERNAME);
     	user.put(EMAIL, PrepareTestUtils.USER_EMAIL);

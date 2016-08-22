@@ -7,6 +7,7 @@ node_js:
 - '6'
 services:
 - mysql
+sudo: required
 env:
   global:
   - VERSION=0.1.1
