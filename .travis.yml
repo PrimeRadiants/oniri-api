@@ -19,6 +19,7 @@ env:
 before_install:
 - npm install apidoc -g
 - mysql -u root -e 'create database oniri_test;'
+- chmod 755 /var/lib/
 - mkdir -p /var/lib/primeradiants/oniri-data/novents/
 script:
 - sed -i "s/<property name=\"hibernate.connection.username\">root<\/property>/<property
