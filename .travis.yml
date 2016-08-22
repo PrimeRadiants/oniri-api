@@ -1,3 +1,4 @@
+sudo: required
 language:
 - java
 - node_js
@@ -19,8 +20,7 @@ env:
 before_install:
 - npm install apidoc -g
 - mysql -u root -e 'create database oniri_test;'
-- chmod 755 /var/lib/
-- mkdir -p /var/lib/primeradiants/oniri-data/novents/
+- sudo mkdir -p /var/lib/primeradiants/oniri-data/novents/
 script:
 - sed -i "s/<property name=\"hibernate.connection.username\">root<\/property>/<property
   name=\"hibernate.connection.username\">$MYSQL_USER<\/property>/g" src/main/resources/hibernate-annotation.cfg.xml
