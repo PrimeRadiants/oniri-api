@@ -60,7 +60,7 @@ public class NoventAdminResource {
 		
 		NoventEntity noventEntity;
 		try {
-			noventEntity = noventManager.createNoven(title, authors, input.getDescription(), coverFile, noventFile);
+			noventEntity = noventManager.createNovent(title, authors, input.getDescription(), coverFile, noventFile);
 			
 			return ResponseEntity.ok(new NoventPostOutput(noventEntity.getId()));
 		} catch (IOException e) {

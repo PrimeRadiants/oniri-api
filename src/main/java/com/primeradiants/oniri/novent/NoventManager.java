@@ -30,7 +30,7 @@ public class NoventManager {
 	private static final String ID = "id";
 	private static final String NOVENT = "novent"; 
 	
-	private static final String NOVENT_FOLDER = "/var/primeradiants/oniri-data/novents/";
+	private static final String NOVENT_FOLDER = "/var/lib/primeradiants/oniri-data/novents/";
 	
 	/**
 	 * Returns a novent based on id.
@@ -83,7 +83,7 @@ public class NoventManager {
 	 * @return The {@link com.primeradiants.oniri.novent.NoventEntity}
 	 * @throws IOException 
 	 */
-	public NoventEntity createNoven(String title, List<String> authors, String description, File coverFile, File noventFile) throws IOException {
+	public NoventEntity createNovent(String title, List<String> authors, String description, File coverFile, File noventFile) throws IOException {
 		NoventEntity noventEntity = new NoventEntity(0, title, authors, description, new Date(), null, null);
 		
 		Session session = sessionFactory.getCurrentSession();
