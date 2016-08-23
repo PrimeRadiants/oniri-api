@@ -1,4 +1,4 @@
-package com.primeradiants.oniri.rest;
+package com.primeradiants.oniri.test.user;
 
 import javax.servlet.Filter;
 
@@ -10,11 +10,8 @@ import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
@@ -31,24 +28,20 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.primeradiants.hibernate.util.HibernateUtil;
 import com.primeradiants.oniri.config.ApplicationConfig;
-import com.primeradiants.oniri.test.utils.PrepareTestUtils;
+import com.primeradiants.oniri.test.novent.NoventTestUtil;
 import com.primeradiants.oniri.user.UserEntity;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = ApplicationConfig.class)
-public class SignUpTest {
-
-	private static Logger logger = LoggerFactory.getLogger(SignUpTest.class);
+public class AllSignUpRestControllerTest {
 	
 	@Autowired
     private WebApplicationContext webApplicationContext;
 	@Autowired
 	private Filter springSecurityFilterChain;
     private MockMvc mockMvc;
-    
-    private static final PrepareTestUtils prepareTestUtils = new PrepareTestUtils(); 
-    
+        
     private static final String USERNAME = "username";
     private static final String EMAIL = "email";
     private static final String PASSWORD = "password";
@@ -75,18 +68,13 @@ public class SignUpTest {
     private static final String INVALID_EMAIL_DOT_BEFORE_AT = "georges.@prime-radiants.com";
     private static final String INVALID_EMAIL_TWO_DOTS = "georges..biaux@prime-radiants.com";
     
-    @BeforeClass
-	public static void initAllTests() {
-    	logger.info("======================== Starting SignUpTest ========================");
-	}
-    
     @Before
     public void initEachTest() {
-    	prepareTestUtils.cleanUserNoventTable();
-    	prepareTestUtils.cleanNoventTable();
-    	prepareTestUtils.cleanUserTable();
-    	
-    	prepareTestUtils.insertTestUser();
+    	UserTestUtil.cleanUserTable();
+    	NoventTestUtil.cleanNoventTable();
+	   	NoventTestUtil.cleanUserNoventTable();
+	   	
+	   	UserTestUtil.insertUserInDatabase(UserTestData.USER_USERNAME, UserTestData.USER_EMAIL, UserTestData.USER_PASSWORD, false);
     	
         this.mockMvc =  MockMvcBuilders
         		.webAppContextSetup(this.webApplicationContext)
@@ -144,7 +132,7 @@ public class SignUpTest {
     public void SignUpReturns400WithAlreadyExistingUsername() throws Exception {
     	ResultMatcher badRequest = MockMvcResultMatchers.status().isBadRequest();
         
-        ResultActions result = sendSignUpRequest(PrepareTestUtils.USER_USERNAME, VALID_PASSWORD, VALID_EMAIL);
+        ResultActions result = sendSignUpRequest(UserTestData.USER_USERNAME, VALID_PASSWORD, VALID_EMAIL);
         result.andExpect(badRequest);
     }
     
@@ -248,7 +236,7 @@ public class SignUpTest {
     public void SignUpReturns400WithAlreadyExistingEmail() throws Exception {
     	ResultMatcher badRequest = MockMvcResultMatchers.status().isBadRequest();
         
-        ResultActions result = sendSignUpRequest(VALID_USERNAME, VALID_PASSWORD, PrepareTestUtils.USER_EMAIL);
+        ResultActions result = sendSignUpRequest(VALID_USERNAME, VALID_PASSWORD, UserTestData.USER_EMAIL);
         result.andExpect(badRequest);
     }
     
@@ -318,10 +306,9 @@ public class SignUpTest {
     
     @AfterClass
 	public static void endingAllTests() {
-    	prepareTestUtils.cleanUserNoventTable();
-    	prepareTestUtils.cleanNoventTable();
-    	prepareTestUtils.cleanUserTable();
-    	logger.info("======================== Ending SignUpTest ========================");
+    	UserTestUtil.cleanUserTable();
+		NoventTestUtil.cleanNoventTable();
+	   	NoventTestUtil.cleanUserNoventTable();
 	}
     
     private ResultActions sendSignUpRequest(String username, String email, String password) throws Exception {

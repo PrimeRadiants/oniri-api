@@ -1,4 +1,4 @@
-package com.primeradiants.oniri.admin;
+package com.primeradiants.oniri.test.novent;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 
@@ -18,8 +18,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -38,14 +36,13 @@ import org.springframework.web.context.WebApplicationContext;
 import com.primeradiants.hibernate.util.HibernateUtil;
 import com.primeradiants.oniri.config.ApplicationConfig;
 import com.primeradiants.oniri.novent.NoventEntity;
-import com.primeradiants.oniri.test.utils.PrepareTestUtils;
+import com.primeradiants.oniri.test.user.UserTestData;
+import com.primeradiants.oniri.test.user.UserTestUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = ApplicationConfig.class)
-public class NoventPostTest {
-
-	private static Logger logger = LoggerFactory.getLogger(NoventPostTest.class);
+public class AdminNoventPostRestControllerTest {
 	
 	@Autowired
     private WebApplicationContext webApplicationContext;
@@ -67,23 +64,21 @@ public class NoventPostTest {
     
     private final static String COVER_FILE_NAME = "cover.png";
     private final static String NOVENT_FILE_NAME = "example.novent";
-    
-    private static final PrepareTestUtils prepareTestUtils = new PrepareTestUtils(); 
 	
     @BeforeClass
-	public static void initAllTests() {
-    	logger.info("======================== Starting NoventPostTest ========================");
-    	prepareTestUtils.cleanUserNoventTable();
-    	prepareTestUtils.cleanNoventTable();
-    	prepareTestUtils.cleanUserTable();
-
-    	prepareTestUtils.insertTestUser();
-    	prepareTestUtils.insertTestAdminUser();
+	public static void initAllTests() {    	
+    	UserTestUtil.cleanUserTable();
+	   	UserTestUtil.insertUserInDatabase(UserTestData.USER_USERNAME, UserTestData.USER_EMAIL, UserTestData.USER_PASSWORD, false);
+	   	UserTestUtil.insertUserInDatabase(UserTestData.ADMIN_USER_USERNAME, UserTestData.ADMIN_USER_EMAIL, UserTestData.ADMIN_USER_PASSWORD, true);
+	   	
+	   	NoventTestUtil.cleanNoventTable();
+	   	NoventTestUtil.cleanUserNoventTable();
+	   	NoventTestUtil.insertTestNovent(NoventTestData.NOVENT_TITLE, NoventTestData.NOVENT_AUTHORS, NoventTestData.NOVENT_DESCRIPTION, NoventTestUtil.getRessourcePath(NoventTestData.NOVENT_COVERPATH), NoventTestUtil.getRessourcePath(NoventTestData.NOVENT_PATH));
 	}
     
 	@Before
     public void initEachTest() {
-		prepareTestUtils.cleanNoventTable();
+		NoventTestUtil.cleanNoventTable();
         this.mockMvc =  MockMvcBuilders
         		.webAppContextSetup(this.webApplicationContext)
         		.addFilters(springSecurityFilterChain)
@@ -91,7 +86,7 @@ public class NoventPostTest {
     }
 	
 	@Test
-    public void NoventPostListReturns401WhenNotLoggedIn() throws Exception {
+    public void NoventPostReturns401WhenNotLoggedIn() throws Exception {
     	ResultMatcher unauthorized = MockMvcResultMatchers.status().isUnauthorized();
 
     	JSONObject request = new JSONObject();
@@ -103,8 +98,8 @@ public class NoventPostTest {
     	request.put(DESCRIPTION, VALID_DESCRIPTION);
     	
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.fileUpload(ENDPOINT_PATH)
-        		.file(new MockMultipartFile(COVER, COVER_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(PrepareTestUtils.NOVENT_COVERPATH)))
-        		.file(new MockMultipartFile(NOVENT, NOVENT_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(PrepareTestUtils.NOVENT_PATH)))
+        		.file(new MockMultipartFile(COVER, COVER_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(NoventTestData.NOVENT_COVERPATH)))
+        		.file(new MockMultipartFile(NOVENT, NOVENT_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(NoventTestData.NOVENT_PATH)))
         		.secure(true)
         		.content(request.toString())
         		.contentType(MediaType.APPLICATION_JSON_UTF8);
@@ -126,9 +121,9 @@ public class NoventPostTest {
     	request.put(DESCRIPTION, VALID_DESCRIPTION);
     	
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.fileUpload(ENDPOINT_PATH)
-        		.file(new MockMultipartFile(COVER, COVER_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(PrepareTestUtils.NOVENT_COVERPATH)))
-        		.file(new MockMultipartFile(NOVENT, NOVENT_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(PrepareTestUtils.NOVENT_PATH)))
-        		.with(httpBasic(PrepareTestUtils.USER_USERNAME + "1", PrepareTestUtils.USER_PASSWORD))
+        		.file(new MockMultipartFile(COVER, COVER_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(NoventTestData.NOVENT_COVERPATH)))
+        		.file(new MockMultipartFile(NOVENT, NOVENT_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(NoventTestData.NOVENT_PATH)))
+        		.with(httpBasic(UserTestData.USER_USERNAME + "1", UserTestData.USER_PASSWORD))
         		.secure(true)
         		.content(request.toString())
         		.contentType(MediaType.APPLICATION_JSON_UTF8);
@@ -150,9 +145,9 @@ public class NoventPostTest {
     	request.put(DESCRIPTION, VALID_DESCRIPTION);
     	
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.fileUpload(ENDPOINT_PATH)
-        		.file(new MockMultipartFile(COVER, COVER_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(PrepareTestUtils.NOVENT_COVERPATH)))
-        		.file(new MockMultipartFile(NOVENT, NOVENT_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(PrepareTestUtils.NOVENT_PATH)))
-        		.with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD))
+        		.file(new MockMultipartFile(COVER, COVER_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(NoventTestData.NOVENT_COVERPATH)))
+        		.file(new MockMultipartFile(NOVENT, NOVENT_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(NoventTestData.NOVENT_PATH)))
+        		.with(httpBasic(UserTestData.USER_USERNAME, UserTestData.USER_PASSWORD))
         		.secure(true)
         		.content(request.toString())
         		.contentType(MediaType.APPLICATION_JSON_UTF8);
@@ -174,9 +169,9 @@ public class NoventPostTest {
     	request.put(DESCRIPTION, VALID_DESCRIPTION);
     	
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.fileUpload(ENDPOINT_PATH)
-        		.file(new MockMultipartFile(COVER, COVER_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(PrepareTestUtils.NOVENT_COVERPATH)))
-        		.file(new MockMultipartFile(NOVENT, NOVENT_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(PrepareTestUtils.NOVENT_PATH)))
-        		.with(httpBasic(PrepareTestUtils.ADMIN_USER_USERNAME, PrepareTestUtils.ADMIN_USER_PASSWORD))
+        		.file(new MockMultipartFile(COVER, COVER_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(NoventTestData.NOVENT_COVERPATH)))
+        		.file(new MockMultipartFile(NOVENT, NOVENT_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(NoventTestData.NOVENT_PATH)))
+        		.with(httpBasic(UserTestData.ADMIN_USER_USERNAME, UserTestData.ADMIN_USER_PASSWORD))
         		.secure(false)
         		.content(request.toString())
         		.contentType(MediaType.APPLICATION_JSON_UTF8);
@@ -198,9 +193,9 @@ public class NoventPostTest {
     	ResultMatcher ok = MockMvcResultMatchers.status().isOk();
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.fileUpload(ENDPOINT_PATH)
-        		.file(new MockMultipartFile(COVER, COVER_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(PrepareTestUtils.NOVENT_COVERPATH)))
-        		.file(new MockMultipartFile(NOVENT, NOVENT_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(PrepareTestUtils.NOVENT_PATH)))
-        		.with(httpBasic(PrepareTestUtils.ADMIN_USER_USERNAME, PrepareTestUtils.ADMIN_USER_PASSWORD))
+        		.file(new MockMultipartFile(COVER, COVER_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(NoventTestData.NOVENT_COVERPATH)))
+        		.file(new MockMultipartFile(NOVENT, NOVENT_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(NoventTestData.NOVENT_PATH)))
+        		.with(httpBasic(UserTestData.ADMIN_USER_USERNAME, UserTestData.ADMIN_USER_PASSWORD))
         		.secure(true)
         		.content(request.toString())
         		.contentType(MediaType.APPLICATION_JSON_UTF8);
@@ -222,9 +217,9 @@ public class NoventPostTest {
     	ResultMatcher badRequest = MockMvcResultMatchers.status().isBadRequest();
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.fileUpload(ENDPOINT_PATH)
-        		.file(new MockMultipartFile(COVER, COVER_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(PrepareTestUtils.NOVENT_COVERPATH)))
-        		.file(new MockMultipartFile(NOVENT, NOVENT_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(PrepareTestUtils.NOVENT_PATH)))
-        		.with(httpBasic(PrepareTestUtils.ADMIN_USER_USERNAME, PrepareTestUtils.ADMIN_USER_PASSWORD))
+        		.file(new MockMultipartFile(COVER, COVER_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(NoventTestData.NOVENT_COVERPATH)))
+        		.file(new MockMultipartFile(NOVENT, NOVENT_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(NoventTestData.NOVENT_PATH)))
+        		.with(httpBasic(UserTestData.ADMIN_USER_USERNAME, UserTestData.ADMIN_USER_PASSWORD))
         		.secure(true)
         		.content(request.toString())
         		.contentType(MediaType.APPLICATION_JSON_UTF8);
@@ -247,9 +242,9 @@ public class NoventPostTest {
     	ResultMatcher badRequest = MockMvcResultMatchers.status().isBadRequest();
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.fileUpload(ENDPOINT_PATH)
-        		.file(new MockMultipartFile(COVER, COVER_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(PrepareTestUtils.NOVENT_COVERPATH)))
-        		.file(new MockMultipartFile(NOVENT, NOVENT_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(PrepareTestUtils.NOVENT_PATH)))
-        		.with(httpBasic(PrepareTestUtils.ADMIN_USER_USERNAME, PrepareTestUtils.ADMIN_USER_PASSWORD))
+        		.file(new MockMultipartFile(COVER, COVER_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(NoventTestData.NOVENT_COVERPATH)))
+        		.file(new MockMultipartFile(NOVENT, NOVENT_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(NoventTestData.NOVENT_PATH)))
+        		.with(httpBasic(UserTestData.ADMIN_USER_USERNAME, UserTestData.ADMIN_USER_PASSWORD))
         		.secure(true)
         		.content(request.toString())
         		.contentType(MediaType.APPLICATION_JSON_UTF8);
@@ -269,9 +264,9 @@ public class NoventPostTest {
     	ResultMatcher badRequest = MockMvcResultMatchers.status().isBadRequest();
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.fileUpload(ENDPOINT_PATH)
-        		.file(new MockMultipartFile(COVER, COVER_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(PrepareTestUtils.NOVENT_COVERPATH)))
-        		.file(new MockMultipartFile(NOVENT, NOVENT_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(PrepareTestUtils.NOVENT_PATH)))
-        		.with(httpBasic(PrepareTestUtils.ADMIN_USER_USERNAME, PrepareTestUtils.ADMIN_USER_PASSWORD))
+        		.file(new MockMultipartFile(COVER, COVER_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(NoventTestData.NOVENT_COVERPATH)))
+        		.file(new MockMultipartFile(NOVENT, NOVENT_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(NoventTestData.NOVENT_PATH)))
+        		.with(httpBasic(UserTestData.ADMIN_USER_USERNAME, UserTestData.ADMIN_USER_PASSWORD))
         		.secure(true)
         		.content(request.toString())
         		.contentType(MediaType.APPLICATION_JSON_UTF8);
@@ -294,8 +289,8 @@ public class NoventPostTest {
     	ResultMatcher badRequest = MockMvcResultMatchers.status().isBadRequest();
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.fileUpload(ENDPOINT_PATH)
-        		.file(new MockMultipartFile(NOVENT, NOVENT_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(PrepareTestUtils.NOVENT_PATH)))
-        		.with(httpBasic(PrepareTestUtils.ADMIN_USER_USERNAME, PrepareTestUtils.ADMIN_USER_PASSWORD))
+        		.file(new MockMultipartFile(NOVENT, NOVENT_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(NoventTestData.NOVENT_PATH)))
+        		.with(httpBasic(UserTestData.ADMIN_USER_USERNAME, UserTestData.ADMIN_USER_PASSWORD))
         		.secure(true)
         		.content(request.toString())
         		.contentType(MediaType.APPLICATION_JSON_UTF8);
@@ -319,9 +314,9 @@ public class NoventPostTest {
 
     	
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.fileUpload(ENDPOINT_PATH)
-        		.file(new MockMultipartFile(COVER, COVER_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(PrepareTestUtils.NOVENT_PATH)))
-        		.file(new MockMultipartFile(NOVENT, NOVENT_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(PrepareTestUtils.NOVENT_PATH)))
-        		.with(httpBasic(PrepareTestUtils.ADMIN_USER_USERNAME, PrepareTestUtils.ADMIN_USER_PASSWORD))
+        		.file(new MockMultipartFile(COVER, COVER_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(NoventTestData.NOVENT_PATH)))
+        		.file(new MockMultipartFile(NOVENT, NOVENT_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(NoventTestData.NOVENT_PATH)))
+        		.with(httpBasic(UserTestData.ADMIN_USER_USERNAME, UserTestData.ADMIN_USER_PASSWORD))
         		.secure(true)
         		.content(request.toString())
         		.contentType(MediaType.APPLICATION_JSON_UTF8);
@@ -345,8 +340,8 @@ public class NoventPostTest {
 
     	
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.fileUpload(ENDPOINT_PATH)
-        		.file(new MockMultipartFile(COVER, COVER_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(PrepareTestUtils.NOVENT_COVERPATH)))
-        		.with(httpBasic(PrepareTestUtils.ADMIN_USER_USERNAME, PrepareTestUtils.ADMIN_USER_PASSWORD))
+        		.file(new MockMultipartFile(COVER, COVER_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(NoventTestData.NOVENT_COVERPATH)))
+        		.with(httpBasic(UserTestData.ADMIN_USER_USERNAME, UserTestData.ADMIN_USER_PASSWORD))
         		.secure(true)
         		.content(request.toString())
         		.contentType(MediaType.APPLICATION_JSON_UTF8);
@@ -370,9 +365,9 @@ public class NoventPostTest {
 
     	
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.fileUpload(ENDPOINT_PATH)
-        		.file(new MockMultipartFile(COVER, COVER_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(PrepareTestUtils.NOVENT_COVERPATH)))
-        		.file(new MockMultipartFile(NOVENT, COVER_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(PrepareTestUtils.NOVENT_COVERPATH)))
-        		.with(httpBasic(PrepareTestUtils.ADMIN_USER_USERNAME, PrepareTestUtils.ADMIN_USER_PASSWORD))
+        		.file(new MockMultipartFile(COVER, COVER_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(NoventTestData.NOVENT_COVERPATH)))
+        		.file(new MockMultipartFile(NOVENT, COVER_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(NoventTestData.NOVENT_COVERPATH)))
+        		.with(httpBasic(UserTestData.ADMIN_USER_USERNAME, UserTestData.ADMIN_USER_PASSWORD))
         		.secure(true)
         		.content(request.toString())
         		.contentType(MediaType.APPLICATION_JSON_UTF8);
@@ -395,9 +390,9 @@ public class NoventPostTest {
     	ResultMatcher json = MockMvcResultMatchers.jsonPath("$.id").isNumber();
     	
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.fileUpload(ENDPOINT_PATH)
-        		.file(new MockMultipartFile(COVER, COVER_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(PrepareTestUtils.NOVENT_COVERPATH)))
-        		.file(new MockMultipartFile(NOVENT, NOVENT_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(PrepareTestUtils.NOVENT_PATH)))
-        		.with(httpBasic(PrepareTestUtils.ADMIN_USER_USERNAME, PrepareTestUtils.ADMIN_USER_PASSWORD))
+        		.file(new MockMultipartFile(COVER, COVER_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(NoventTestData.NOVENT_COVERPATH)))
+        		.file(new MockMultipartFile(NOVENT, NOVENT_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(NoventTestData.NOVENT_PATH)))
+        		.with(httpBasic(UserTestData.ADMIN_USER_USERNAME, UserTestData.ADMIN_USER_PASSWORD))
         		.secure(true)
         		.content(request.toString())
         		.contentType(MediaType.APPLICATION_JSON_UTF8);
@@ -417,9 +412,9 @@ public class NoventPostTest {
     	request.put(DESCRIPTION, VALID_DESCRIPTION);
     	
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.fileUpload(ENDPOINT_PATH)
-        		.file(new MockMultipartFile(COVER, COVER_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(PrepareTestUtils.NOVENT_COVERPATH)))
-        		.file(new MockMultipartFile(NOVENT, NOVENT_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(PrepareTestUtils.NOVENT_PATH)))
-        		.with(httpBasic(PrepareTestUtils.ADMIN_USER_USERNAME, PrepareTestUtils.ADMIN_USER_PASSWORD))
+        		.file(new MockMultipartFile(COVER, COVER_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(NoventTestData.NOVENT_COVERPATH)))
+        		.file(new MockMultipartFile(NOVENT, NOVENT_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(NoventTestData.NOVENT_PATH)))
+        		.with(httpBasic(UserTestData.ADMIN_USER_USERNAME, UserTestData.ADMIN_USER_PASSWORD))
         		.secure(true)
         		.content(request.toString())
         		.contentType(MediaType.APPLICATION_JSON_UTF8);
@@ -453,9 +448,9 @@ public class NoventPostTest {
     	request.put(DESCRIPTION, VALID_DESCRIPTION);
     	
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.fileUpload(ENDPOINT_PATH)
-        		.file(new MockMultipartFile(COVER, COVER_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(PrepareTestUtils.NOVENT_COVERPATH)))
-        		.file(new MockMultipartFile(NOVENT, NOVENT_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(PrepareTestUtils.NOVENT_PATH)))
-        		.with(httpBasic(PrepareTestUtils.ADMIN_USER_USERNAME, PrepareTestUtils.ADMIN_USER_PASSWORD))
+        		.file(new MockMultipartFile(COVER, COVER_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(NoventTestData.NOVENT_COVERPATH)))
+        		.file(new MockMultipartFile(NOVENT, NOVENT_FILE_NAME, "", ClassLoader.getSystemResourceAsStream(NoventTestData.NOVENT_PATH)))
+        		.with(httpBasic(UserTestData.ADMIN_USER_USERNAME, UserTestData.ADMIN_USER_PASSWORD))
         		.secure(true)
         		.content(request.toString())
         		.contentType(MediaType.APPLICATION_JSON_UTF8);
@@ -484,9 +479,8 @@ public class NoventPostTest {
 	
 	@AfterClass
    	public static void endingAllTests() {
-		prepareTestUtils.cleanUserNoventTable();
-		prepareTestUtils.cleanNoventTable();
-		prepareTestUtils.cleanUserTable();
-       	logger.info("======================== Ending NoventPostTest ========================");
+		UserTestUtil.cleanUserTable();
+		NoventTestUtil.cleanNoventTable();
+	   	NoventTestUtil.cleanUserNoventTable();
    	}
 }

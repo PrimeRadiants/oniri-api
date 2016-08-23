@@ -69,6 +69,12 @@ public class NoventAdminResource {
 			return new ResponseEntity<Collection<ValidationError>>(errors, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@RequestMapping(value = "/novent", method = RequestMethod.GET)
+	public ResponseEntity<?> getNovents() 
+	{
+		return ResponseEntity.ok().build();
+	}
 
 	private String validateTitle(String title, Collection<ValidationError> errors) {
 		if(title == null || title.equals(""))
