@@ -50,11 +50,12 @@ public class ReaderNoventServletTest {
 	
 	@BeforeClass
 	public static void initAllTests() {
+		NoventTestUtil.cleanUserNoventTable();
+		
 	   	UserTestUtil.cleanUserTable();
 	   	insertedUser = UserTestUtil.insertUserInDatabase(UserTestData.USER_USERNAME, UserTestData.USER_EMAIL, UserTestData.USER_PASSWORD, false);
 	   	
 	   	NoventTestUtil.cleanNoventTable();
-	   	NoventTestUtil.cleanUserNoventTable();
 	   	insertedNovent = NoventTestUtil.insertTestNovent(NoventTestData.NOVENT_TITLE, NoventTestData.NOVENT_AUTHORS, NoventTestData.NOVENT_DESCRIPTION, NoventTestUtil.getRessourcePath(NoventTestData.NOVENT_COVERPATH), NoventTestUtil.getRessourcePath(NoventTestData.NOVENT_PATH));
 	}
     
@@ -164,9 +165,9 @@ public class ReaderNoventServletTest {
     
     @AfterClass
 	public static void endingAllTests() {
+    	NoventTestUtil.cleanUserNoventTable();
     	UserTestUtil.cleanUserTable();
 		NoventTestUtil.cleanNoventTable();
-	   	NoventTestUtil.cleanUserNoventTable();
 	}
 	
 }

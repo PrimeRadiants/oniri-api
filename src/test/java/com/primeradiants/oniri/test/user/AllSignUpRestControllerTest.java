@@ -70,9 +70,9 @@ public class AllSignUpRestControllerTest {
     
     @Before
     public void initEachTest() {
+    	NoventTestUtil.cleanUserNoventTable();
     	UserTestUtil.cleanUserTable();
     	NoventTestUtil.cleanNoventTable();
-	   	NoventTestUtil.cleanUserNoventTable();
 	   	
 	   	UserTestUtil.insertUserInDatabase(UserTestData.USER_USERNAME, UserTestData.USER_EMAIL, UserTestData.USER_PASSWORD, false);
     	
@@ -306,9 +306,9 @@ public class AllSignUpRestControllerTest {
     
     @AfterClass
 	public static void endingAllTests() {
+    	NoventTestUtil.cleanUserNoventTable();
     	UserTestUtil.cleanUserTable();
 		NoventTestUtil.cleanNoventTable();
-	   	NoventTestUtil.cleanUserNoventTable();
 	}
     
     private ResultActions sendSignUpRequest(String username, String email, String password) throws Exception {
