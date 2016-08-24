@@ -1,5 +1,7 @@
 package com.primeradiants.oniri.config;
 
+import java.util.Properties;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +27,18 @@ public class ApplicationConfig {
 	
 	@Bean
     public MailSender mailSender() {
-		MailSender mailSender = new JavaMailSenderImpl();
+		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+		mailSender.setHost("SSL0.OVH.NET");
+		mailSender.setPort(587);
+		mailSender.setProtocol("smtp");
+		mailSender.setUsername("noreply-test@prime-radiants.com");
+		mailSender.setPassword("A12345678");
+		
+		Properties properties = new Properties();
+		properties.put("mail.smtp.auth", "true");
+		properties.put("mail.smtp.starttls.enable", "true");
+		properties.put("mail.smtp.quitwait", "true");
+		mailSender.setJavaMailProperties(properties);
 		return mailSender;
     }
 	

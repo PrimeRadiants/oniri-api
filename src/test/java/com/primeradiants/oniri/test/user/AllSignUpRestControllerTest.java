@@ -60,7 +60,7 @@ public class AllSignUpRestControllerTest {
     private static final String INVALID_PASSWORD_TOO_SHORT = "A1a";
     private static final String INVALID_PASSWORD_WITH_SPACE = "ABCDa FG1";
     
-    private static final String VALID_EMAIL = "georges.biaux@prime-radiants.com";
+    private static final String VALID_EMAIL = "test@prime-radiants.com";
     private static final String INVALID_EMAIL_MISSING_AT = "georges.biauxprime-radiants.com";
     private static final String INVALID_EMAIL_MISSING_DOMAIN = "georges.biaux@.com";
     private static final String INVALID_EMAIL_MISSING_EXT = "georges.biaux@prime-radiantscom";
