@@ -187,4 +187,13 @@ public class NoventManager {
 		
 		return (link != null);
 	}
+	
+	public void deleteNovent(NoventEntity novent) {		
+		Session session = sessionFactory.getCurrentSession();
+		session.beginTransaction();
+		
+		session.delete(novent);
+		
+		session.getTransaction().commit();
+	}
 }

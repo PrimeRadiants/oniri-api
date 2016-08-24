@@ -3,9 +3,11 @@ package com.primeradiants.oniri.test.novent;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,6 +83,23 @@ public class NoventTestUtil {
 		session.close();
 		
 		return userNoventEntity;
+	}
+	
+	public static NoventEntity getNoventFromDatabase(int id) {
+		SessionFactory sessionFactory = HibernateUtil.getSessionAnnotationFactory();
+        Session session = sessionFactory.openSession();
+		session.beginTransaction();
+		
+		Criteria criteria = session.createCriteria(UserEntity.class)
+				.add(Restrictions.eq("id", id))
+				.setMaxResults(1);
+		
+		NoventEntity novent = (NoventEntity) criteria.uniqueResult();
+		
+		session.getTransaction().commit();
+    	session.close();
+    	
+    	return novent;
 	}
 	
 	public static String getRessourcePath(String name) {

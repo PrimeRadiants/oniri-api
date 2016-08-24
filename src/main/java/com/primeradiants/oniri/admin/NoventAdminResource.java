@@ -9,6 +9,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,6 +37,7 @@ public class NoventAdminResource {
 
 	@Autowired private NoventManager noventManager;
 	
+	private final static String ID = "id";
 	private final static String TITLE = "title";
 	private final static String AUTHORS = "authors";
 	private final static String COVER = "cover";
@@ -70,9 +72,19 @@ public class NoventAdminResource {
 		}
 	}
 	
-	@RequestMapping(value = "/novent", method = RequestMethod.GET)
-	public ResponseEntity<?> getNovents() 
+	@RequestMapping(value = "/novent/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<?> getNovents(@PathVariable(ID) Integer id) 
 	{
+		final Collection<ValidationError> errors = new ArrayList<ValidationError>();
+		NoventEntity novent = validateNoventId(id, errors);
+		
+		if (!errors.isEmpty())
+        {
+            return new ResponseEntity<Collection<ValidationError>>(errors, HttpStatus.BAD_REQUEST);
+        }
+		
+		noventManager.deleteNovent(novent);
+		
 		return ResponseEntity.ok().build();
 	}
 
@@ -132,6 +144,16 @@ public class NoventAdminResource {
 		}
 		
 		return noventFile;
+	}
+	
+	//Checks if id corresponds to an existing novent in database and returns the NoventEntity object
+	private NoventEntity validateNoventId(Integer id, Collection<ValidationError> errors) {
+		NoventEntity novent = noventManager.getNovent(id);
+		
+		if(novent == null)
+			errors.add(new ValidationError(ID, "Unknown novent with id " + id));
+		
+		return novent;
 	}
 
 	/**
