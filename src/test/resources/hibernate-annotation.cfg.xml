@@ -30,6 +30,7 @@
         
         <!-- Mapping with model class containing annotations -->
         <mapping class="com.primeradiants.oniri.user.UserEntity"/>
+        <mapping class="com.primeradiants.oniri.user.EmailValidationTokenEntity"/>
         <mapping class="com.primeradiants.oniri.novent.NoventEntity"/>
         <mapping class="com.primeradiants.oniri.novent.UserNoventEntity"/>
         

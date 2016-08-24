@@ -48,6 +48,7 @@ public class AdminUserListGetRestControllerTest {
 	
     @BeforeClass
 	public static void initAllTests() {
+    	UserTestUtil.cleanEmailValidationTokenTable();
     	NoventTestUtil.cleanUserNoventTable();
     	
 	   	UserTestUtil.cleanUserTable();

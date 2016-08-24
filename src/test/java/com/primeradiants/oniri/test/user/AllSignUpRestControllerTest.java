@@ -70,6 +70,7 @@ public class AllSignUpRestControllerTest {
     
     @Before
     public void initEachTest() {
+    	UserTestUtil.cleanEmailValidationTokenTable();
     	NoventTestUtil.cleanUserNoventTable();
     	UserTestUtil.cleanUserTable();
     	NoventTestUtil.cleanNoventTable();

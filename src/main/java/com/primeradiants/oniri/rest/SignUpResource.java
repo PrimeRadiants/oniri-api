@@ -8,12 +8,14 @@ import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.primeradiants.model.errors.ValidationError;
+import com.primeradiants.oniri.user.EmailValidationTokenEntity;
 import com.primeradiants.oniri.user.UserEntity;
 import com.primeradiants.oniri.user.UserManager;
 
@@ -34,6 +36,7 @@ public class SignUpResource {
 	private static final String USERNAME = "username";
 	private static final String EMAIL = "email";
 	private static final String PASSWORD = "password";
+	private static final String TOKEN = "token";
 	private static final String DIGIT_REGEX = ".*[1-9].*";
 	private static final String LOWERCASE_REGEX = ".*[a-z].*";
 	private static final String UPPERCASE_REGEX = ".*[A-Z].*";
@@ -83,6 +86,26 @@ public class SignUpResource {
 		UserEntity user = userManager.createUser(username, email, password, false);
 		
 		return ResponseEntity.ok(new UserResource.UserResponse(user.getUsername(), user.getEmail(), user.getCreated()));
+	}
+	
+	@RequestMapping(value = "/signUp/{token}", method = RequestMethod.GET)
+	public ResponseEntity<?> signUp(@PathVariable String token) {
+		final Collection<ValidationError> errors = new ArrayList<ValidationError>();
+		
+		EmailValidationTokenEntity tokenEntity = validateEmailValidationToken(token, errors);
+		
+		if (!errors.isEmpty())
+        {
+            return new ResponseEntity<Collection<ValidationError>>(errors, HttpStatus.BAD_REQUEST);
+        }
+		
+		UserEntity user = tokenEntity.getUser();
+		user.setEnabled(true);
+		
+		userManager.updateUser(user);
+		userManager.deleteEmailValidationToken(tokenEntity);
+		
+		return ResponseEntity.ok().build();
 	}
 
 	/*
@@ -184,6 +207,20 @@ public class SignUpResource {
 		return password;
 	}
 
+	private EmailValidationTokenEntity validateEmailValidationToken(String token, Collection<ValidationError> errors) {
+		if(token == null) {
+			errors.add(new ValidationError(TOKEN, "Missing parameter token"));
+			return null;
+		}
+		
+		EmailValidationTokenEntity tokenEntity = userManager.getEmailValidationTokenByToken(token);
+		
+		if(tokenEntity == null)
+			errors.add(new ValidationError(TOKEN, "Invalid validation token"));
+		
+		return tokenEntity;
+	}
+	
 	/**
 	 * Simple bean representing the data needed to sign up to Oniri
 	 * @author Shanira

@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.primeradiants.hibernate.util.HibernateUtil;
+import com.primeradiants.oniri.user.EmailValidationTokenEntity;
 import com.primeradiants.oniri.user.UserEntity;
 
 public class UserTestUtil {
@@ -29,6 +30,20 @@ public class UserTestUtil {
 		deletedLines = query.executeUpdate();
 		
 		logger.info("User Table cleaned : " + deletedLines + " lines deleted ");
+		session.getTransaction().commit();
+		session.close();
+	}
+	
+	public static void cleanEmailValidationTokenTable() {
+		logger.info("Cleaning EmailValidationToken Table");
+		Session session = sessionFactory.openSession();
+		session.beginTransaction();
+		
+		Query query = session.createQuery("delete from EmailValidationTokenEntity");
+		int deletedLines = 0;
+		deletedLines = query.executeUpdate();
+		
+		logger.info("EmailValidationToken Table cleaned : " + deletedLines + " lines deleted ");
 		session.getTransaction().commit();
 		session.close();
 	}
@@ -65,5 +80,22 @@ public class UserTestUtil {
     	session.close();
     	
     	return user;
+	}
+	
+	public static EmailValidationTokenEntity insertEmailValidationTokenInDatabase(UserEntity user, String token) {
+		EmailValidationTokenEntity tokenEntity = new EmailValidationTokenEntity(0, token, user, new Date());
+		Session session = sessionFactory.openSession();
+		
+		session.beginTransaction();
+		session.save(tokenEntity);
+		session.getTransaction().commit();
+		session.close();
+		
+		session = sessionFactory.openSession();
+		//Getting result directly from database
+		tokenEntity = (EmailValidationTokenEntity) session.get(EmailValidationTokenEntity.class, tokenEntity.getId());
+		
+		session.close();
+		return tokenEntity;
 	}
 }
