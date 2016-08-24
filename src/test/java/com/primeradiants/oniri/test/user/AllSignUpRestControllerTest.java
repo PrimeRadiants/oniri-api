@@ -74,7 +74,7 @@ public class AllSignUpRestControllerTest {
     	UserTestUtil.cleanUserTable();
     	NoventTestUtil.cleanNoventTable();
 	   	
-	   	UserTestUtil.insertUserInDatabase(UserTestData.USER_USERNAME, UserTestData.USER_EMAIL, UserTestData.USER_PASSWORD, false);
+	   	UserTestUtil.insertUserInDatabase(UserTestData.USER_USERNAME, UserTestData.USER_EMAIL, UserTestData.USER_PASSWORD, true, false);
     	
         this.mockMvc =  MockMvcBuilders
         		.webAppContextSetup(this.webApplicationContext)

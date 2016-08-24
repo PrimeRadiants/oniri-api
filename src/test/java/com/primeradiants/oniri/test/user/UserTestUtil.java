@@ -33,8 +33,8 @@ public class UserTestUtil {
 		session.close();
 	}
 	
-	public static UserEntity insertUserInDatabase(String username, String email, String password, boolean isAdmin) {
-		UserEntity user = new UserEntity(0, username, email, password, new Date(), true, isAdmin);
+	public static UserEntity insertUserInDatabase(String username, String email, String password, boolean idEnabled, boolean isAdmin) {
+		UserEntity user = new UserEntity(0, username, email, password, new Date(), idEnabled, isAdmin);
 		Session session = sessionFactory.openSession();
 		
 		session.beginTransaction();
