@@ -34,7 +34,7 @@ public class UserTestUtil {
 	}
 	
 	public static UserEntity insertUserInDatabase(String username, String email, String password, boolean isAdmin) {
-		UserEntity user = new UserEntity(0, username, email, password, new Date(), isAdmin);
+		UserEntity user = new UserEntity(0, username, email, password, new Date(), true, isAdmin);
 		Session session = sessionFactory.openSession();
 		
 		session.beginTransaction();

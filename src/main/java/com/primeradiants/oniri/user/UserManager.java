@@ -35,7 +35,7 @@ public class UserManager {
 	 * @return the newly created UserEntity
 	 */
 	public UserEntity createUser(String username, String email, String password, Boolean admin) {
-		UserEntity user = new UserEntity(0, username, email, passwordEncoder.encode(password), new Date(), admin);
+		UserEntity user = new UserEntity(0, username, email, passwordEncoder.encode(password), new Date(), false, admin);
 		
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();

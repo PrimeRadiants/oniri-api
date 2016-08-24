@@ -33,7 +33,7 @@ public class HibernateUserDetailsService implements UserDetailsService {
 		if(user.getAdmin())
 			authorities.add(new SimpleGrantedAuthority("admin"));
 		
-		UserDetails result = new User(user.getUsername(), user.getPassword(), true, true, true, true, authorities);
+		UserDetails result = new User(user.getUsername(), user.getPassword(), user.getEnabled(), true, true, true, authorities);
 		return result;
 	}
 

@@ -47,5 +47,8 @@ public class UserEntity
 	private Date created;
 	
 	@Column
+	private Boolean enabled;
+	
+	@Column
 	private Boolean admin;
 }
