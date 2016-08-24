@@ -110,7 +110,7 @@ public class AllSignUpRestControllerTest {
     }
     
     @Test
-    public void SignUpAndCreateUserInDatabase() throws Exception {    	
+    public void SignUpAndCreateDesabledUserInDatabase() throws Exception {    	
         sendSignUpRequest(VALID_USERNAME, VALID_PASSWORD, VALID_EMAIL);
         
         SessionFactory sessionFactory = HibernateUtil.getSessionAnnotationFactory();
@@ -127,6 +127,7 @@ public class AllSignUpRestControllerTest {
     	session.close();
     	
 		Assert.assertNotNull(user);
+		Assert.assertFalse(user.getEnabled());
     }
     
     @Test

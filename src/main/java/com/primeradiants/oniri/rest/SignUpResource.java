@@ -2,12 +2,15 @@ package com.primeradiants.oniri.rest;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +35,7 @@ import lombok.NoArgsConstructor;
 public class SignUpResource {
 
 	@Autowired private UserManager userManager;
+	@Autowired private MailSender mailSender;
 	
 	private static final String USERNAME = "username";
 	private static final String EMAIL = "email";
@@ -84,6 +88,17 @@ public class SignUpResource {
         }
 		
 		UserEntity user = userManager.createUser(username, email, password, false);
+		
+		String emailValidationToken = UUID.randomUUID().toString();
+		userManager.createEmailValidationTokenByToken(user, emailValidationToken);
+		
+//		SimpleMailMessage validationEmail = new SimpleMailMessage();
+//		validationEmail.setTo(user.getEmail());
+//		validationEmail.setSubject("Email confirmation");
+//		validationEmail.setText(emailValidationToken);
+//		validationEmail.setFrom("test@oniri.io");
+//		
+//		mailSender.send(validationEmail);
 		
 		return ResponseEntity.ok(new UserResource.UserResponse(user.getUsername(), user.getEmail(), user.getCreated()));
 	}

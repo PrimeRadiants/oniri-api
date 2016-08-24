@@ -144,6 +144,25 @@ public class UserManager {
 	}
 	
 	/**
+	 * Persists a new EmailValidationToken into database.
+	 * @param user the user entity
+	 * @param token the token string
+	 * @return the created EmailValidationTokenEntity object.
+	 */
+	public EmailValidationTokenEntity createEmailValidationTokenByToken(UserEntity user, String token) {
+		EmailValidationTokenEntity tokenEntity = new EmailValidationTokenEntity(0, token, user, new Date());
+		
+		Session session = sessionFactory.getCurrentSession();
+		session.beginTransaction();
+		
+		session.save(tokenEntity);
+		
+		session.getTransaction().commit();
+		
+		return tokenEntity;
+	}
+	
+	/**
 	 * Returns the EmailValidationToken of a User based on the token string.
 	 * @param token the token string
 	 * @return the EmailValidationTokenEntity object, or null if the token cannot be found including null token.
