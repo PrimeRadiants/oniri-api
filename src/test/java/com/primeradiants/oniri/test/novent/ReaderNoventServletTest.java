@@ -1,4 +1,4 @@
-package com.primeradiants.oniri.rest;
+package com.primeradiants.oniri.test.novent;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 
@@ -16,8 +16,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -33,14 +31,14 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.primeradiants.oniri.config.ApplicationConfig;
 import com.primeradiants.oniri.novent.NoventEntity;
+import com.primeradiants.oniri.test.user.UserTestData;
+import com.primeradiants.oniri.test.user.UserTestUtil;
 import com.primeradiants.oniri.user.UserEntity;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = ApplicationConfig.class)
-public class NoventServletTest {
-
-	private static Logger logger = LoggerFactory.getLogger(NoventServletTest.class);
+public class ReaderNoventServletTest {
 	
 	@Autowired
     private WebApplicationContext webApplicationContext;
@@ -50,16 +48,15 @@ public class NoventServletTest {
 	private static NoventEntity insertedNovent;
 	private static UserEntity insertedUser;
 	
-	private static final PrepareTestUtils prepareTestUtils = new PrepareTestUtils(); 
-	
 	@BeforeClass
 	public static void initAllTests() {
-    	logger.info("======================== Starting NoventServletTest ========================");
-    	prepareTestUtils.cleanUserNoventTable();
-    	prepareTestUtils.cleanNoventTable();
-    	prepareTestUtils.cleanUserTable();
-    	insertedNovent = prepareTestUtils.insertTestNovent();
-    	insertedUser = prepareTestUtils.insertTestUser();
+		NoventTestUtil.cleanUserNoventTable();
+		
+	   	UserTestUtil.cleanUserTable();
+	   	insertedUser = UserTestUtil.insertUserInDatabase(UserTestData.USER_USERNAME, UserTestData.USER_EMAIL, UserTestData.USER_PASSWORD, false);
+	   	
+	   	NoventTestUtil.cleanNoventTable();
+	   	insertedNovent = NoventTestUtil.insertTestNovent(NoventTestData.NOVENT_TITLE, NoventTestData.NOVENT_AUTHORS, NoventTestData.NOVENT_DESCRIPTION, NoventTestUtil.getRessourcePath(NoventTestData.NOVENT_COVERPATH), NoventTestUtil.getRessourcePath(NoventTestData.NOVENT_PATH));
 	}
     
     @Before
@@ -74,7 +71,7 @@ public class NoventServletTest {
     public void NoventServletReturns401WhenNotLoggedIn() throws Exception {
     	ResultMatcher unauthorized = MockMvcResultMatchers.status().isUnauthorized();
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/" + insertedNovent.getId() + "/index.html");
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/" + insertedNovent.getId() + "/index.html").secure(true);
         this.mockMvc.perform(builder)
                     .andExpect(unauthorized);
     }
@@ -83,7 +80,7 @@ public class NoventServletTest {
     public void NoventServletReturns401WithNonExistingUser() throws Exception {
     	ResultMatcher unauthorized = MockMvcResultMatchers.status().isUnauthorized();
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/" + insertedNovent.getId() + "/index.html").with(httpBasic(PrepareTestUtils.USER_USERNAME + "1", PrepareTestUtils.USER_PASSWORD));
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/" + insertedNovent.getId() + "/index.html").with(httpBasic(UserTestData.USER_USERNAME + "1", UserTestData.USER_PASSWORD)).secure(true);
         this.mockMvc.perform(builder)
                     .andExpect(unauthorized);
     }
@@ -92,7 +89,7 @@ public class NoventServletTest {
     public void NoventServletReturns404ResponseForInvalidID() throws Exception {
     	ResultMatcher notFound = MockMvcResultMatchers.status().isNotFound();
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/" + (insertedNovent.getId() + 1) + "/index.html").with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD));
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/" + (insertedNovent.getId() + 1) + "/index.html").with(httpBasic(UserTestData.USER_USERNAME, UserTestData.USER_PASSWORD)).secure(true);
         this.mockMvc.perform(builder)
                     .andExpect(notFound);
     }
@@ -101,35 +98,48 @@ public class NoventServletTest {
     public void NoventServletReturns403ResponseForExistingIDButNotOwnedNovent() throws Exception {
     	ResultMatcher forbiden = MockMvcResultMatchers.status().isForbidden();
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/" + insertedNovent.getId() + "/index.html").with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD));
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/" + insertedNovent.getId() + "/index.html").with(httpBasic(UserTestData.USER_USERNAME, UserTestData.USER_PASSWORD)).secure(true);
         ResultActions result = this.mockMvc.perform(builder);
         
         result.andExpect(forbiden);
     }
     
     @Test
+    public void NoventServletReturns302WhenNotSecured() throws Exception {
+    	NoventTestUtil.createUserNoventLink(insertedUser, insertedNovent);
+    	ResultMatcher redirection = MockMvcResultMatchers.status().is3xxRedirection();
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/" + insertedNovent.getId() + "/index.html").with(httpBasic(UserTestData.USER_USERNAME, UserTestData.USER_PASSWORD)).secure(false);
+        ResultActions result = this.mockMvc.perform(builder);
+        
+        result.andExpect(redirection);
+        
+        NoventTestUtil.cleanUserNoventTable();
+    }
+    
+    @Test
     public void NoventServletReturnsOkResponseForExistingID() throws Exception {
-    	prepareTestUtils.createUserNoventLink(insertedUser, insertedNovent);
+    	NoventTestUtil.createUserNoventLink(insertedUser, insertedNovent);
     	ResultMatcher ok = MockMvcResultMatchers.status().isOk();
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/" + insertedNovent.getId() + "/index.html").with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD));
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/" + insertedNovent.getId() + "/index.html").with(httpBasic(UserTestData.USER_USERNAME, UserTestData.USER_PASSWORD)).secure(true);
         ResultActions result = this.mockMvc.perform(builder);
         
         result.andExpect(ok);
         
-        prepareTestUtils.cleanUserNoventTable();
+        NoventTestUtil.cleanUserNoventTable();
     }
     
     @Test
     public void NoventServletReturnsNoventFile() throws Exception {
-    	prepareTestUtils.createUserNoventLink(insertedUser, insertedNovent);
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/" + insertedNovent.getId() + "/index.html").with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD));
+    	NoventTestUtil.createUserNoventLink(insertedUser, insertedNovent);
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/servlet/novent/" + insertedNovent.getId() + "/index.html").with(httpBasic(UserTestData.USER_USERNAME, UserTestData.USER_PASSWORD)).secure(true);
 
         byte[] returnedBytes = this.mockMvc.perform(builder).andReturn().getResponse().getContentAsByteArray();
         
         ClassLoader classLoader = getClass().getClassLoader();
         
-        File expectedFile = new File(classLoader.getResource(PrepareTestUtils.NOVENT_PATH).getPath());
+        File expectedFile = new File(classLoader.getResource(NoventTestData.NOVENT_PATH).getPath());
         ZipFile noventZip = new ZipFile(expectedFile);
         ZipEntry entry = noventZip.getEntry("index.html");
         
@@ -150,15 +160,14 @@ public class NoventServletTest {
         inputStream.close();
         outputStream.close(); 
         noventZip.close();
-        prepareTestUtils.cleanUserNoventTable();
+        NoventTestUtil.cleanUserNoventTable();
     }
     
     @AfterClass
 	public static void endingAllTests() {
-    	prepareTestUtils.cleanUserNoventTable();
-    	prepareTestUtils.cleanNoventTable();
-    	prepareTestUtils.cleanUserTable();
-    	logger.info("======================== Ending NoventServletTest ========================");
+    	NoventTestUtil.cleanUserNoventTable();
+    	UserTestUtil.cleanUserTable();
+		NoventTestUtil.cleanNoventTable();
 	}
 	
 }

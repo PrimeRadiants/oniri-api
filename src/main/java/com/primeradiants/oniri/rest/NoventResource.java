@@ -68,12 +68,16 @@ public class NoventResource {
 	 */
 	@RequestMapping(value = "/novent/list", method = RequestMethod.GET)
 	public ResponseEntity<?> getStoreNoventList() {
+		UserDetails currentUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		UserEntity user = userManager.getUser(currentUser.getUsername());
+		
 		List<NoventEntity> novents = noventManager.getAllNovents();
+		List<NoventEntity> userNovents = noventManager.getAllUserNovents(user);
 		
 		List<NoventResponse> response = new ArrayList<NoventResponse>();
 		
 		for(NoventEntity novent : novents)
-			response.add(new NoventResponse(novent.getId(), novent.getTitle(), novent.getAuthors(), novent.getPublication()));
+			response.add(new NoventResponse(novent.getId(), novent.getTitle(), novent.getAuthors(), novent.getPublication(), userNovents.contains(novent)));
 		
 		return ResponseEntity.ok(new NoventListResponse(response));
 	}
@@ -121,6 +125,9 @@ public class NoventResource {
 	 */
 	@RequestMapping(value = "/novent/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getNovent(@PathVariable(ID) Integer id) {
+		UserDetails currentUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		UserEntity user = userManager.getUser(currentUser.getUsername());
+		
 		final Collection<ValidationError> errors = new ArrayList<ValidationError>();
 		
 		NoventEntity novent = validateNoventId(id, errors);
@@ -130,7 +137,7 @@ public class NoventResource {
             return new ResponseEntity<Collection<ValidationError>>(errors, HttpStatus.BAD_REQUEST);
         }
 		
-		NoventDetailedResponse response = new NoventDetailedResponse(novent.getId(), novent.getTitle(), novent.getDescription(), novent.getAuthors(), novent.getPublication());
+		NoventDetailedResponse response = new NoventDetailedResponse(novent.getId(), novent.getTitle(), novent.getDescription(), novent.getAuthors(), novent.getPublication(), noventManager.doesUserOwnNovent(user, novent));
 		
 		return ResponseEntity.ok(response);
 	}
@@ -217,6 +224,7 @@ public class NoventResource {
 		private String title;
 		private List<String> authors;
 		private Date publication;
+		private boolean userOwn;
 	}
 	
 	/**
@@ -233,5 +241,6 @@ public class NoventResource {
 		private String description;
 		private List<String> authors;
 		private Date publication;
+		private boolean userOwn;
 	}
 }

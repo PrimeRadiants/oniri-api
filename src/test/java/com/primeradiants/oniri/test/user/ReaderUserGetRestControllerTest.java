@@ -1,4 +1,4 @@
-package com.primeradiants.oniri.rest;
+package com.primeradiants.oniri.test.user;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 
@@ -10,8 +10,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
@@ -26,14 +24,14 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.primeradiants.oniri.config.ApplicationConfig;
+import com.primeradiants.oniri.test.novent.NoventTestData;
+import com.primeradiants.oniri.test.novent.NoventTestUtil;
 import com.primeradiants.oniri.user.UserEntity;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = ApplicationConfig.class)
-public class UserGetTest {
-
-private static Logger logger = LoggerFactory.getLogger(SignUpTest.class);
+public class ReaderUserGetRestControllerTest {
 	
 	@Autowired
     private WebApplicationContext webApplicationContext;
@@ -46,16 +44,15 @@ private static Logger logger = LoggerFactory.getLogger(SignUpTest.class);
     private final static String EMAIL = "email";
     private final static String CREATED = "created";
     
-    private static final PrepareTestUtils prepareTestUtils = new PrepareTestUtils(); 
-	
     @BeforeClass
 	public static void initAllTests() {
-    	logger.info("======================== Starting NoventGetTest ========================");
-    	prepareTestUtils.cleanUserNoventTable();
-    	prepareTestUtils.cleanNoventTable();
-    	prepareTestUtils.cleanUserTable();
-
-    	insertedUser = prepareTestUtils.insertTestUser();
+    	NoventTestUtil.cleanUserNoventTable();
+    	
+	   	UserTestUtil.cleanUserTable();
+	   	insertedUser = UserTestUtil.insertUserInDatabase(UserTestData.USER_USERNAME, UserTestData.USER_EMAIL, UserTestData.USER_PASSWORD, false);
+	   	
+	   	NoventTestUtil.cleanNoventTable();
+	   	NoventTestUtil.insertTestNovent(NoventTestData.NOVENT_TITLE, NoventTestData.NOVENT_AUTHORS, NoventTestData.NOVENT_DESCRIPTION, NoventTestUtil.getRessourcePath(NoventTestData.NOVENT_COVERPATH), NoventTestUtil.getRessourcePath(NoventTestData.NOVENT_PATH));
 	}
     
 	@Before
@@ -70,7 +67,7 @@ private static Logger logger = LoggerFactory.getLogger(SignUpTest.class);
     public void UserReturns401WhenNotLoggedIn() throws Exception {
     	ResultMatcher unauthorized = MockMvcResultMatchers.status().isUnauthorized();
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/user");
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/user").secure(true);
         this.mockMvc.perform(builder)
                     .andExpect(unauthorized);
     }
@@ -79,16 +76,25 @@ private static Logger logger = LoggerFactory.getLogger(SignUpTest.class);
     public void UserReturns401WithNonExistingUser() throws Exception {
     	ResultMatcher unauthorized = MockMvcResultMatchers.status().isUnauthorized();
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/user").with(httpBasic(PrepareTestUtils.USER_USERNAME + "1", PrepareTestUtils.USER_PASSWORD));
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/user").with(httpBasic(UserTestData.USER_USERNAME + "1", UserTestData.USER_PASSWORD)).secure(true);
         this.mockMvc.perform(builder)
                     .andExpect(unauthorized);
+    }
+	
+	@Test
+    public void UserReturns302WhenNotSecured() throws Exception {
+    	ResultMatcher redirection = MockMvcResultMatchers.status().is3xxRedirection();
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/user").with(httpBasic(UserTestData.USER_USERNAME, UserTestData.USER_PASSWORD)).secure(false);
+        this.mockMvc.perform(builder)
+                    .andExpect(redirection);
     }
     
     @Test
     public void UserReturnsOkWhenLoggedInWithExistingUser() throws Exception {
     	ResultMatcher ok = MockMvcResultMatchers.status().isOk();
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/user").with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD));
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/user").with(httpBasic(UserTestData.USER_USERNAME, UserTestData.USER_PASSWORD)).secure(true);
         this.mockMvc.perform(builder)
                     .andExpect(ok);
     }
@@ -97,7 +103,7 @@ private static Logger logger = LoggerFactory.getLogger(SignUpTest.class);
     public void UserReturnsUtf8Json() throws Exception {
         ResultMatcher json = MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8);
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/user").with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD));
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/user").with(httpBasic(UserTestData.USER_USERNAME, UserTestData.USER_PASSWORD)).secure(true);
         this.mockMvc.perform(builder)
                     .andExpect(json);
     }
@@ -105,22 +111,21 @@ private static Logger logger = LoggerFactory.getLogger(SignUpTest.class);
     @Test
     public void UserReturnsUserInDatabase() throws Exception {
     	JSONObject expectedJson = new JSONObject();
-    	expectedJson.put(USERNAME, PrepareTestUtils.USER_USERNAME);
-    	expectedJson.put(EMAIL, PrepareTestUtils.USER_EMAIL);
+    	expectedJson.put(USERNAME, UserTestData.USER_USERNAME);
+    	expectedJson.put(EMAIL, UserTestData.USER_EMAIL);
     	expectedJson.put(CREATED, insertedUser.getCreated().getTime());
     	
         ResultMatcher jsonMatcher = MockMvcResultMatchers.content().json(expectedJson.toString());
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/user").with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD));
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/rest/api/user").with(httpBasic(UserTestData.USER_USERNAME, UserTestData.USER_PASSWORD)).secure(true);
         this.mockMvc.perform(builder)
                     .andExpect(jsonMatcher);
     }
 	
 	@AfterClass
    	public static void endingAllTests() {
-		prepareTestUtils.cleanUserNoventTable();
-		prepareTestUtils.cleanNoventTable();
-		prepareTestUtils.cleanUserTable();
-       	logger.info("======================== Ending NoventGetTest ========================");
+		NoventTestUtil.cleanUserNoventTable();
+		UserTestUtil.cleanUserTable();
+		NoventTestUtil.cleanNoventTable();
    	}
 }

@@ -46,4 +46,6 @@ public class UserEntity
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date created;
 	
+	@Column
+	private Boolean admin;
 }

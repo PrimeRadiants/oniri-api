@@ -51,11 +51,15 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 		protected void configure(HttpSecurity http) throws Exception {
 			http
 				//TODO : determine if keeping this protection or not
+				.requiresChannel()
+					.anyRequest().requiresSecure()
+					.and()
 				.csrf()
 					.disable()
 				.authorizeRequests()
 					.antMatchers("/rest/**").authenticated()
 					.antMatchers("/servlet/**").authenticated()
+					.antMatchers("/admin/**").hasAuthority("admin")
 					.antMatchers("/signUp").permitAll()
 					.and()
 				.httpBasic();

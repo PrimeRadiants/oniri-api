@@ -80,7 +80,7 @@ public class SignUpResource {
             return new ResponseEntity<Collection<ValidationError>>(errors, HttpStatus.BAD_REQUEST);
         }
 		
-		UserEntity user = userManager.createUser(username, email, password);
+		UserEntity user = userManager.createUser(username, email, password, false);
 		
 		return ResponseEntity.ok(new UserResource.UserResponse(user.getUsername(), user.getEmail(), user.getCreated()));
 	}

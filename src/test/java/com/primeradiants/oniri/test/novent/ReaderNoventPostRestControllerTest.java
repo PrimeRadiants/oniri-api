@@ -1,4 +1,4 @@
-package com.primeradiants.oniri.rest;
+package com.primeradiants.oniri.test.novent;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 
@@ -18,8 +18,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -36,14 +34,14 @@ import com.primeradiants.hibernate.util.HibernateUtil;
 import com.primeradiants.oniri.config.ApplicationConfig;
 import com.primeradiants.oniri.novent.NoventEntity;
 import com.primeradiants.oniri.novent.UserNoventEntity;
+import com.primeradiants.oniri.test.user.UserTestData;
+import com.primeradiants.oniri.test.user.UserTestUtil;
 import com.primeradiants.oniri.user.UserEntity;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = ApplicationConfig.class)
-public class NoventPostTest {
-
-	private static Logger logger = LoggerFactory.getLogger(NoventPostTest.class);
+public class ReaderNoventPostRestControllerTest {
 	
 	@Autowired
     private WebApplicationContext webApplicationContext;
@@ -53,16 +51,15 @@ public class NoventPostTest {
 	private static NoventEntity insertedNovent;
 	private static UserEntity insertedUser;
 	
-	private static final PrepareTestUtils prepareTestUtils = new PrepareTestUtils(); 
-	
 	@BeforeClass
 	public static void initAllTests() {
-    	logger.info("======================== Starting NoventPostTest ========================");
-    	prepareTestUtils.cleanUserNoventTable();
-    	prepareTestUtils.cleanNoventTable();
-    	prepareTestUtils.cleanUserTable();
-    	insertedNovent = prepareTestUtils.insertTestNovent();
-    	insertedUser = prepareTestUtils.insertTestUser();
+		NoventTestUtil.cleanUserNoventTable();
+		
+	   	UserTestUtil.cleanUserTable();
+	   	insertedUser = UserTestUtil.insertUserInDatabase(UserTestData.USER_USERNAME, UserTestData.USER_EMAIL, UserTestData.USER_PASSWORD, false);
+	   	
+	   	NoventTestUtil.cleanNoventTable();
+	   	insertedNovent = NoventTestUtil.insertTestNovent(NoventTestData.NOVENT_TITLE, NoventTestData.NOVENT_AUTHORS, NoventTestData.NOVENT_DESCRIPTION, NoventTestUtil.getRessourcePath(NoventTestData.NOVENT_COVERPATH), NoventTestUtil.getRessourcePath(NoventTestData.NOVENT_PATH));
 	}
     
     @Before
@@ -77,7 +74,7 @@ public class NoventPostTest {
     public void NoventListReturns401WhenNotLoggedIn() throws Exception {
     	ResultMatcher unauthorized = MockMvcResultMatchers.status().isUnauthorized();
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/rest/api/novent/" + insertedNovent.getId());
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/rest/api/novent/" + insertedNovent.getId()).secure(true);
         this.mockMvc.perform(builder)
                     .andExpect(unauthorized);
     }
@@ -86,7 +83,7 @@ public class NoventPostTest {
     public void NoventListReturns401WithNonExistingUser() throws Exception {
     	ResultMatcher unauthorized = MockMvcResultMatchers.status().isUnauthorized();
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/rest/api/novent/" + insertedNovent.getId()).with(httpBasic(PrepareTestUtils.USER_USERNAME + "1", PrepareTestUtils.USER_PASSWORD));
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/rest/api/novent/" + insertedNovent.getId()).with(httpBasic(UserTestData.USER_USERNAME + "1", UserTestData.USER_PASSWORD)).secure(true);
         this.mockMvc.perform(builder)
                     .andExpect(unauthorized);
     }
@@ -102,25 +99,36 @@ public class NoventPostTest {
     	
     	ResultMatcher jsonError = MockMvcResultMatchers.content().json(expectedJson.toString());
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/rest/api/novent/" + (insertedNovent.getId() + 1)).with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD));
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/rest/api/novent/" + (insertedNovent.getId() + 1)).with(httpBasic(UserTestData.USER_USERNAME, UserTestData.USER_PASSWORD)).secure(true);
         this.mockMvc.perform(builder)
                     .andExpect(jsonError);
+    }
+    
+    @Test
+    public void NoventReturns302WhenNotSeccured() throws Exception {
+    	ResultMatcher redirection = MockMvcResultMatchers.status().is3xxRedirection();
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/rest/api/novent/" + insertedNovent.getId()).with(httpBasic(UserTestData.USER_USERNAME, UserTestData.USER_PASSWORD)).secure(false);
+        this.mockMvc.perform(builder)
+                    .andExpect(redirection);
+        
+        NoventTestUtil.cleanUserNoventTable();
     }
     
     @Test
     public void NoventReturnsOkResponseForExistingID() throws Exception {
     	ResultMatcher ok = MockMvcResultMatchers.status().isOk();
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/rest/api/novent/" + insertedNovent.getId()).with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD));
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/rest/api/novent/" + insertedNovent.getId()).with(httpBasic(UserTestData.USER_USERNAME, UserTestData.USER_PASSWORD)).secure(true);
         this.mockMvc.perform(builder)
                     .andExpect(ok);
         
-        prepareTestUtils.cleanUserNoventTable();
+        NoventTestUtil.cleanUserNoventTable();
     }
     
     @Test
     public void NoventUserLinkIsCreatedWhenPostOnUserEndpoint() throws Exception {
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/rest/api/novent/" + insertedNovent.getId()).with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD));
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/rest/api/novent/" + insertedNovent.getId()).with(httpBasic(UserTestData.USER_USERNAME, UserTestData.USER_PASSWORD)).secure(true);
         this.mockMvc.perform(builder);
         
         SessionFactory sessionFactory = HibernateUtil.getSessionAnnotationFactory();
@@ -143,9 +151,9 @@ public class NoventPostTest {
     @Test
     public void LinkBetweenNoventAndUserCanBeCreatedOnlyOneTime() throws Exception {
     	//starting with a clean table
-    	prepareTestUtils.cleanUserNoventTable();
+    	NoventTestUtil.cleanUserNoventTable();
     	
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/rest/api/novent/" + insertedNovent.getId()).with(httpBasic(PrepareTestUtils.USER_USERNAME, PrepareTestUtils.USER_PASSWORD));
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/rest/api/novent/" + insertedNovent.getId()).with(httpBasic(UserTestData.USER_USERNAME, UserTestData.USER_PASSWORD)).secure(true);
         this.mockMvc.perform(builder);
 
         //performing request twice
@@ -166,9 +174,8 @@ public class NoventPostTest {
 	
     @AfterClass
 	public static void endingAllTests() {
-    	prepareTestUtils.cleanUserNoventTable();
-    	prepareTestUtils.cleanNoventTable();
-    	prepareTestUtils.cleanUserTable();
-    	logger.info("======================== Ending NoventPostTest ========================");
+    	NoventTestUtil.cleanUserNoventTable();
+    	UserTestUtil.cleanUserTable();
+		NoventTestUtil.cleanNoventTable();
 	}
 }
