@@ -31,9 +31,9 @@ public class ApplicationConfig {
 	@Bean
     public JavaMailSender mailSender() {
 		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-		mailSender.setHost("213.186.33.20");
-		mailSender.setPort(587);
-		mailSender.setProtocol("smtp");
+		mailSender.setHost("SSL0.OVH.NET");
+		mailSender.setPort(465);
+		mailSender.setProtocol("smtps");
 		mailSender.setUsername("noreply-test@prime-radiants.com");
 		mailSender.setPassword("A12345678");
 		
