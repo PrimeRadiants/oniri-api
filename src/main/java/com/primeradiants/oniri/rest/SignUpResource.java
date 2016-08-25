@@ -1,16 +1,23 @@
 package com.primeradiants.oniri.rest;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.MailSender;
-import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +29,8 @@ import com.primeradiants.oniri.user.EmailValidationTokenEntity;
 import com.primeradiants.oniri.user.UserEntity;
 import com.primeradiants.oniri.user.UserManager;
 
+import freemarker.template.Configuration;
+import freemarker.template.TemplateException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -35,7 +44,8 @@ import lombok.NoArgsConstructor;
 public class SignUpResource {
 
 	@Autowired private UserManager userManager;
-	@Autowired private MailSender mailSender;
+	@Autowired private JavaMailSender mailSender;
+	@Autowired Configuration freemarkerConfiguration;
 	
 	private static final String USERNAME = "username";
 	private static final String EMAIL = "email";
@@ -92,15 +102,26 @@ public class SignUpResource {
 		String emailValidationToken = UUID.randomUUID().toString();
 		userManager.createEmailValidationTokenByToken(user, emailValidationToken);
 		
-		SimpleMailMessage validationEmail = new SimpleMailMessage();
-		validationEmail.setTo(user.getEmail());
-		validationEmail.setSubject("Email confirmation");
-		validationEmail.setText(emailValidationToken);
-		validationEmail.setFrom("noreply@oniri.io");
+		try {
+			Map<String, Object> templatedMimeMessage = new HashMap<String, Object>(); 
+			templatedMimeMessage.put("username", user.getUsername());
+			templatedMimeMessage.put("url", "");
+			String messageText = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("emailValidationTemplate.ftl"), templatedMimeMessage);
 		
-		mailSender.send(validationEmail);
-		
-		return ResponseEntity.ok(new UserResource.UserResponse(user.getUsername(), user.getEmail(), user.getCreated()));
+			MimeMessage validationEmail = mailSender.createMimeMessage();
+			validationEmail.setRecipients(Message.RecipientType.TO, user.getEmail());
+			validationEmail.setSubject("Email confirmation");
+			validationEmail.setContent(messageText, "text/html");
+			validationEmail.setFrom("noreply@oniri.io");
+				
+			mailSender.send(validationEmail);
+			
+			return ResponseEntity.ok(new UserResource.UserResponse(user.getUsername(), user.getEmail(), user.getCreated()));
+		} catch (IOException | TemplateException | MessagingException e) {
+			e.printStackTrace();
+			errors.add(new ValidationError("", "Internal Error, try again or contact your system administrator"));
+			return new ResponseEntity<Collection<ValidationError>>(errors, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
 	@RequestMapping(value = "/signUp/{token}", method = RequestMethod.GET)

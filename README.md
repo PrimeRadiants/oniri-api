@@ -1,4 +1,6 @@
-![Oniri Logo](http://oniri.prime-radiants.com/images/oniri-logo.png)
+<h1 align="center">
+	<img src="http://oniri.io/images/oniri-logo.png" alt="awesome">
+</h1>
 
 Oniri is a novent distributor service offered by [Prime Radiants](https://prime-radiants.com). User can purchase and read short stories augmented with music, sounds and animations.
 
