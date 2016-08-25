@@ -92,13 +92,13 @@ public class SignUpResource {
 		String emailValidationToken = UUID.randomUUID().toString();
 		userManager.createEmailValidationTokenByToken(user, emailValidationToken);
 		
-		SimpleMailMessage validationEmail = new SimpleMailMessage();
-		validationEmail.setTo(user.getEmail());
-		validationEmail.setSubject("Email confirmation");
-		validationEmail.setText(emailValidationToken);
-		validationEmail.setFrom("noreply@oniri.io");
-		
-		mailSender.send(validationEmail);
+//		SimpleMailMessage validationEmail = new SimpleMailMessage();
+//		validationEmail.setTo(user.getEmail());
+//		validationEmail.setSubject("Email confirmation");
+//		validationEmail.setText(emailValidationToken);
+//		validationEmail.setFrom("noreply@oniri.io");
+//		
+//		mailSender.send(validationEmail);
 		
 		return ResponseEntity.ok(new UserResource.UserResponse(user.getUsername(), user.getEmail(), user.getCreated()));
 	}
