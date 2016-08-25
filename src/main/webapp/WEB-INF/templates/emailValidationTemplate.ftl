@@ -1,7 +1,16 @@
 <html>
 	<body style="padding: 5px;font-family: Helvetica Neue,Helvetica,Lucida Grande,tahoma,verdana,arial,sans-serif;">
 		<div style="padding: 10px;border-bottom: solid 1px #e5e5e5;font-size: 19px;color: #018d67">
-			Confirm your new Oniri account
+			<table>
+				<tr>
+					<td>
+						<img src="http://oniri.io/images/oniri-logo-mono.png" style="width: 32px;margin-right:10px"/>
+					</td>
+					<td>
+						<span style=";font-size: 19px;color: #018d67">Confirm your new Oniri account<span>
+					</td>
+				</tr>
+			</table>
 		</div>
 		<div style="padding: 10px;margin-top:20px;">
 			Hi ${username}!<br/><br/>
