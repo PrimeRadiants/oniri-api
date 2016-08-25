@@ -75,7 +75,7 @@ public class AllEmailValidationRestControllerTest {
     public void SignUpGetReturns400WithNonExistingToken() throws Exception {    	
     	ResultMatcher badRequest = MockMvcResultMatchers.status().isBadRequest();
         
-    	MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get(ENDPOINT_PATH + emailValidationToken + "1")
+    	MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get(ENDPOINT_PATH + emailValidationToken + "")
         		.contentType(MediaType.APPLICATION_JSON_UTF8)
         		.secure(true);
         		
@@ -83,28 +83,28 @@ public class AllEmailValidationRestControllerTest {
                     .andExpect(badRequest);
     }
     
-//    @Test
-//    public void SignUpGetReturnsOkWithExistingToken() throws Exception {    	
-//    	ResultMatcher ok = MockMvcResultMatchers.status().isOk();
-//        
-//    	MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get(ENDPOINT_PATH + emailValidationToken)
-//        		.contentType(MediaType.APPLICATION_JSON_UTF8)
-//        		.secure(true);
-//        		
-//        this.mockMvc.perform(builder)
-//                    .andExpect(ok);
-//    }
-//    
-//    @Test
-//    public void SignUpGetEnablesUserInDatabase() throws Exception {    	        
-//    	MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get(ENDPOINT_PATH + emailValidationToken)
-//        		.contentType(MediaType.APPLICATION_JSON_UTF8)
-//        		.secure(true);
-//        		
-//        this.mockMvc.perform(builder);
-//        
-//        UserEntity user = UserTestUtil.getUserFromDatabase(tokenEntity.getUser().getUsername());
-//        
-//        Assert.assertTrue(user.getEnabled());
-//    }
+    @Test
+    public void SignUpGetReturnsOkWithExistingToken() throws Exception {    	
+    	ResultMatcher ok = MockMvcResultMatchers.status().isOk();
+        
+    	MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get(ENDPOINT_PATH + emailValidationToken)
+        		.contentType(MediaType.APPLICATION_JSON_UTF8)
+        		.secure(true);
+        		
+        this.mockMvc.perform(builder)
+                    .andExpect(ok);
+    }
+    
+    @Test
+    public void SignUpGetEnablesUserInDatabase() throws Exception {    	        
+    	MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get(ENDPOINT_PATH + emailValidationToken)
+        		.contentType(MediaType.APPLICATION_JSON_UTF8)
+        		.secure(true);
+        		
+        this.mockMvc.perform(builder);
+        
+        UserEntity user = UserTestUtil.getUserFromDatabase(tokenEntity.getUser().getUsername());
+        
+        Assert.assertTrue(user.getEnabled());
+    }
 }

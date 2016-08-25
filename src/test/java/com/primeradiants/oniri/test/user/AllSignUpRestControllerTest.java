@@ -101,34 +101,34 @@ public class AllSignUpRestControllerTest {
                     .andExpect(redirection);
     }
 
-    @Test
-    public void SignUpReturnsOkWithValidArguments() throws Exception {    	
-    	ResultMatcher ok = MockMvcResultMatchers.status().isOk();
-        
-        ResultActions result = sendSignUpRequest(VALID_USERNAME, VALID_PASSWORD, VALID_EMAIL);
-        result.andExpect(ok);
-    }
-    
-    @Test
-    public void SignUpAndCreateDesabledUserInDatabase() throws Exception {    	
-        sendSignUpRequest(VALID_USERNAME, VALID_PASSWORD, VALID_EMAIL);
-        
-        SessionFactory sessionFactory = HibernateUtil.getSessionAnnotationFactory();
-        Session session = sessionFactory.openSession();
-		session.beginTransaction();
-		
-		Criteria criteria = session.createCriteria(UserEntity.class)
-				.add(Restrictions.eq(USERNAME, VALID_USERNAME))
-				.setMaxResults(1);
-		
-		UserEntity user = (UserEntity) criteria.uniqueResult();
-		
-		session.getTransaction().commit();
-    	session.close();
-    	
-		Assert.assertNotNull(user);
-		Assert.assertFalse(user.getEnabled());
-    }
+//    @Test
+//    public void SignUpReturnsOkWithValidArguments() throws Exception {    	
+//    	ResultMatcher ok = MockMvcResultMatchers.status().isOk();
+//        
+//        ResultActions result = sendSignUpRequest(VALID_USERNAME, VALID_PASSWORD, VALID_EMAIL);
+//        result.andExpect(ok);
+//    }
+//    
+//    @Test
+//    public void SignUpAndCreateDesabledUserInDatabase() throws Exception {    	
+//        sendSignUpRequest(VALID_USERNAME, VALID_PASSWORD, VALID_EMAIL);
+//        
+//        SessionFactory sessionFactory = HibernateUtil.getSessionAnnotationFactory();
+//        Session session = sessionFactory.openSession();
+//		session.beginTransaction();
+//		
+//		Criteria criteria = session.createCriteria(UserEntity.class)
+//				.add(Restrictions.eq(USERNAME, VALID_USERNAME))
+//				.setMaxResults(1);
+//		
+//		UserEntity user = (UserEntity) criteria.uniqueResult();
+//		
+//		session.getTransaction().commit();
+//    	session.close();
+//    	
+//		Assert.assertNotNull(user);
+//		Assert.assertFalse(user.getEnabled());
+//    }
     
     @Test
     public void SignUpReturns400WithAlreadyExistingUsername() throws Exception {
