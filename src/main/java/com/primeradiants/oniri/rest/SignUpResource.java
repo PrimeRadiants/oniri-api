@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,7 +86,7 @@ public class SignUpResource {
 	 * @since 0.1.0
 	 */
 	@RequestMapping(value = "/signUp", method = RequestMethod.POST)
-	public ResponseEntity<?> signUp(@RequestBody SignUpInput input) {
+	public ResponseEntity<?> signUp(@RequestBody SignUpInput input, HttpServletRequest request) {
 		final Collection<ValidationError> errors = new ArrayList<ValidationError>();
 		
 		String username = validateUsername(input.getUsername(), errors);
@@ -105,7 +106,7 @@ public class SignUpResource {
 		try {
 			Map<String, Object> templatedMimeMessage = new HashMap<String, Object>(); 
 			templatedMimeMessage.put("username", user.getUsername());
-			templatedMimeMessage.put("url", "");
+			templatedMimeMessage.put("url", request.getRequestURL() + "/" + emailValidationToken);
 			String messageText = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("emailValidationTemplate.ftl"), templatedMimeMessage);
 		
 			MimeMessage validationEmail = mailSender.createMimeMessage();
