@@ -75,7 +75,7 @@ public class AllEmailValidationRestControllerTest {
     public void SignUpGetReturns400WithNonExistingToken() throws Exception {    	
     	ResultMatcher badRequest = MockMvcResultMatchers.status().isBadRequest();
         
-    	MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get(ENDPOINT_PATH + emailValidationToken + "")
+    	MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get(ENDPOINT_PATH + emailValidationToken + "1")
         		.contentType(MediaType.APPLICATION_JSON_UTF8)
         		.secure(true);
         		
