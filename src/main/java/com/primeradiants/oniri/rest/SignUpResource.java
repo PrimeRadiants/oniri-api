@@ -142,7 +142,7 @@ public class SignUpResource {
 		userManager.updateUser(user);
 		userManager.deleteEmailValidationToken(tokenEntity);
 		
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok("success");
 	}
 
 	/*
