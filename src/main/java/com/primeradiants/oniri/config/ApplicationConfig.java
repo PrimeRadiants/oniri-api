@@ -1,5 +1,6 @@
 package com.primeradiants.oniri.config;
 
+import java.io.IOException;
 import java.util.Properties;
 
 import org.springframework.context.annotation.Bean;
@@ -8,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean;
@@ -29,19 +31,19 @@ public class ApplicationConfig {
     }
 	
 	@Bean
-    public JavaMailSender mailSender() {
+    public JavaMailSender mailSender() throws IOException {
 		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-		mailSender.setHost("SSL0.OVH.NET");
-		mailSender.setPort(465);
-		mailSender.setProtocol("smtps");
-		mailSender.setUsername("noreply-test@prime-radiants.com");
-		mailSender.setPassword("A12345678");
-		
-		Properties properties = new Properties();
-		properties.put("mail.smtp.auth", "true");
-		properties.put("mail.smtp.starttls.enable", "true");
-		properties.put("mail.smtp.quitwait", "true");
+				
+		Resource resource = new ClassPathResource("/mailserver.properties");
+		Properties properties = PropertiesLoaderUtils.loadProperties(resource);
 		mailSender.setJavaMailProperties(properties);
+		
+		mailSender.setHost(properties.getProperty("mail.smtp.host"));
+		mailSender.setPort(Integer.parseInt(properties.getProperty("mail.smtp.port")));
+		mailSender.setProtocol(properties.getProperty("mail.smtp.protocol"));
+		mailSender.setUsername(properties.getProperty("mail.smtp.username"));
+		mailSender.setPassword(properties.getProperty("mail.smtp.password"));
+		
 		return mailSender;
     }
 	
