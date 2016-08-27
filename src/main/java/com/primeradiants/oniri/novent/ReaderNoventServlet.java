@@ -51,8 +51,8 @@ public class ReaderNoventServlet {
 	/**
 	 * Get the requested novent cover image
 	 * @param id the id of the novent
-	 * @param request
-	 * @param response
+	 * @param request the http request
+	 * @param response the http response
 	 */
 	@RequestMapping(value = "/novent/cover/{id}", method = RequestMethod.GET)
 	public void getNoventCover(@PathVariable(ID) Integer id, HttpServletRequest request, HttpServletResponse response) {
@@ -90,8 +90,8 @@ public class ReaderNoventServlet {
 	 /**
 	  * Get a file in requested novent archive
 	  * @param id the id of the novent
-	  * @param request
-	  * @param response
+	  * @param request the http request
+	  * @param response the http response
 	  */
 	@RequestMapping(value = "/novent/{id}/**", method = RequestMethod.GET)
 	public void getNoventFile(@PathVariable(ID) Integer id, HttpServletRequest request, HttpServletResponse response) {

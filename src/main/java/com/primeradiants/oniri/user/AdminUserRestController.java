@@ -30,7 +30,7 @@ public class AdminUserRestController {
 	
 	/**
 	 * Retreive the list of all Oniri users
-	 * @return a list of {@link com.primeradiants.oniri.user.ReaderUserRestController.UserResponse}.
+	 * @return a list of {@link com.primeradiants.oniri.user.dto.ReaderUserGetOutput}.
 	 */
 	@RequestMapping(value = "/user/list", method = RequestMethod.GET)
 	public ResponseEntity<?> getUserList() 
@@ -47,7 +47,7 @@ public class AdminUserRestController {
 	/**
 	 * Retrieve a user by its user name
 	 * @param username the user name of the user
-	 * @return a {@link com.primeradiants.oniri.user.ReaderUserRestController.UserResponse} if user exists, 
+	 * @return a {@link com.primeradiants.oniri.user.dto.ReaderUserGetOutput} if user exists, 
 	 * 			else a Collection of {@link com.primeradiants.model.errors.ValidationError}
 	 */
 	@RequestMapping(value = "/user/{username}", method = RequestMethod.GET)

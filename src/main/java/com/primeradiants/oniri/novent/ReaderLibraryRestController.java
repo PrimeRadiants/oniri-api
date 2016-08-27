@@ -31,7 +31,7 @@ public class ReaderLibraryRestController {
 
 	/**
 	 * Returns the list of all the current user novents
-	 * @return a List of {@link com.primeradiants.oniri.novent.ReaderNoventRestController.NoventResponse}
+	 * @return a List of {@link com.primeradiants.oniri.novent.dto.ReaderNoventListGetOutput}
 	 */
 	@RequestMapping(value = "/library/list", method = RequestMethod.GET)
 	public ResponseEntity<?> getCurrentUserLibraryNoventList() {

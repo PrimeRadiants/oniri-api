@@ -33,6 +33,7 @@ public class UserManager {
 	 * @param username the user name of the new user
 	 * @param email the email of the new user
 	 * @param password the password of the new user (will be hashed)
+	 * @param admin is the created user an admin user
 	 * @return the newly created UserEntity
 	 */
 	public UserEntity createUser(String username, String email, String password, Boolean admin) {

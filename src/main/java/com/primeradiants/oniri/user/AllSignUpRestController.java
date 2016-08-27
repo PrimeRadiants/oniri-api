@@ -56,6 +56,7 @@ public class AllSignUpRestController {
 	 * Allow a user to create an account on Oniri
 	 * 
 	 * @param input Object representing sign up data
+	 * @param request the http request
 	 * @return The created user data
 	 * @since 0.1.0
 	 */

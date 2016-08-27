@@ -45,7 +45,7 @@ public class AdminNoventRestController {
 	 * @param cover Cover file of the novent
 	 * @param novent Novent file
 	 * @param input Input object containing novent data
-	 * @return a {@link com.primeradiants.oniri.novent.AdminNoventRestController.AdminNoventPostOutput.NoventPostOutput} object,
+	 * @return a {@link com.primeradiants.oniri.novent.dto.AdminNoventPostOutput} object,
 	 * 			or a list of {@link com.primeradiants.model.errors.ValidationError} in case of invalid inputs
 	 */
 	@RequestMapping(value = "/novent", method = RequestMethod.POST)

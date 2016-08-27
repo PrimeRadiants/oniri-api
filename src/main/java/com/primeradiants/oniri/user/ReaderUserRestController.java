@@ -23,7 +23,7 @@ public class ReaderUserRestController {
 	
 	/**
 	 * Retrieves the current logged in user.
-	 * @return a {@link com.primeradiants.oniri.user.ReaderUserRestController.UserResponse}.
+	 * @return a {@link com.primeradiants.oniri.user.dto.ReaderUserGetOutput}.
 	 */
 	@RequestMapping(value = "/user", method = RequestMethod.GET)
 	public ResponseEntity<?> getCurrentUser() 

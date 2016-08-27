@@ -81,7 +81,7 @@ public class NoventManager {
 	 * @param coverFile The cover of the novent
 	 * @param noventFile The novent archive
 	 * @return The {@link com.primeradiants.oniri.novent.NoventEntity}
-	 * @throws IOException 
+	 * @throws IOException raised when the given files cannot be read
 	 */
 	public NoventEntity createNovent(String title, List<String> authors, String description, File coverFile, File noventFile) throws IOException {
 		NoventEntity noventEntity = new NoventEntity(0, title, authors, description, new Date(), null, null);

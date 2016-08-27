@@ -37,7 +37,7 @@ public class ReaderNoventRestController {
 	
 	/**
 	 * Returns the list of all the novents in store
-	 * @return a List of {@link com.primeradiants.oniri.novent.ReaderNoventRestController.NoventResponse}.
+	 * @return a List of {@link com.primeradiants.oniri.novent.dto.ReaderNoventListGetOutput}.
 	 */
 	@RequestMapping(value = "/novent/list", method = RequestMethod.GET)
 	public ResponseEntity<?> getStoreNoventList() {
@@ -58,7 +58,7 @@ public class ReaderNoventRestController {
 	/**
 	 * Retrieves a novent by its id
 	 * @param id the id of the novent
-	 * @return a {@link com.primeradiants.oniri.novent.ReaderNoventRestController.NoventResponse} if novent exists, 
+	 * @return a {@link com.primeradiants.oniri.novent.dto.ReaderNoventDetailsGetOutput} if novent exists, 
 	 * 			else a Collection of {@link com.primeradiants.model.errors.ValidationError}.
 	 */
 	@RequestMapping(value = "/novent/{id}", method = RequestMethod.GET)
@@ -83,7 +83,7 @@ public class ReaderNoventRestController {
 	/**
 	 * Create an own link between a user and a novent
 	 * @param id the id of the novent
-	 * @return a {@link com.primeradiants.oniri.novent.ReaderNoventRestController.NoventResponse} if novent exists, 
+	 * @return an ok response if the novent exists, 
 	 * 			else a Collection of {@link com.primeradiants.model.errors.ValidationError}.
 	 */
 	@RequestMapping(value = "/novent/{id}", method = RequestMethod.POST)
