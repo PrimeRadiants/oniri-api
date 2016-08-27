@@ -241,7 +241,11 @@
 					<!-- aggregated reports for multi-module projects -->
 					<aggregate>true</aggregate>
 					<instrumentation>
-				    	<ignoreTrivial>true</ignoreTrivial>                 
+				    	<ignoreTrivial>true</ignoreTrivial>
+				    	<ignores>
+					      <ignore>com.primeradiants.oniri.config</ignore>
+					      <ignore>com.primeradiants.oniri.config.security</ignore>
+					    </ignores>
 				  	</instrumentation>
 				</configuration>
 			</plugin>
