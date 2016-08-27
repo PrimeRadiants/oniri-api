@@ -6,6 +6,11 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+/**
+ * Utility class to manage novents
+ * @author Shanira
+ * @since 0.1.1
+ */
 public class NoventUtil {
 	
 	public final static String NOVENT_EXTENSION = "novent";

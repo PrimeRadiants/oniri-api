@@ -3,8 +3,9 @@ package com.primeradiants.oniri.user.dto;
 import java.util.Date;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Simple bean representing a user
@@ -14,7 +15,8 @@ import lombok.NoArgsConstructor;
  */
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class ReaderUserGetOutput {
 	private String username;
 	private String email;

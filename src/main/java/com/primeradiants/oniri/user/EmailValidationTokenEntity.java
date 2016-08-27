@@ -16,8 +16,9 @@ import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Represents a email validation token attached to a ONIRI user.
@@ -28,7 +29,8 @@ import lombok.NoArgsConstructor;
 @Table(name="emailvalidationtoken", uniqueConstraints={@UniqueConstraint(columnNames={"id"})})
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class EmailValidationTokenEntity {
 
 	@Id

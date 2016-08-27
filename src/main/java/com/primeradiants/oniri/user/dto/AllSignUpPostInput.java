@@ -1,8 +1,9 @@
 package com.primeradiants.oniri.user.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Simple bean representing the data needed to sign up to Oniri
@@ -11,7 +12,8 @@ import lombok.NoArgsConstructor;
  */
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class AllSignUpPostInput {
 	private String username;
 	private String email;
