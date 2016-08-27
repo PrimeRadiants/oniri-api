@@ -1,5 +1,7 @@
 package com.primeradiants.model.errors;
 
+import com.primeradiants.coverage.util.CoverageIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +13,7 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 @AllArgsConstructor
+@CoverageIgnore
 @Data
 public class ValidationError {
 	private String field;
