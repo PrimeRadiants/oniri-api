@@ -1,10 +1,9 @@
 package com.primeradiants.model.errors;
 
-import com.primeradiants.coverage.util.CoverageIgnore;
-
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Simple bean for holding a field reference and an error key.
@@ -13,8 +12,8 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 @AllArgsConstructor
-@CoverageIgnore
-@Data
+@Getter
+@Setter
 public class ValidationError {
 	private String field;
 	private String error;

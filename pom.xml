@@ -246,9 +246,6 @@
 					      <ignore>com.primeradiants.oniri.config</ignore>
 					      <ignore>com.primeradiants.oniri.config.security</ignore>
 					    </ignores>
-					    <ignoreMethodAnnotations>
-	                        <ignoreMethodAnnotation>com.primeradiants.coverage.util.CoverageIgnore</ignoreMethodAnnotation>
-	                    </ignoreMethodAnnotations>
 				  	</instrumentation>
 				</configuration>
 			</plugin>

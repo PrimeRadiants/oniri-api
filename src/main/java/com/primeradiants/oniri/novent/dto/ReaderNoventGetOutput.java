@@ -4,8 +4,9 @@ import java.util.Date;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Simple bean representing a novent
@@ -14,7 +15,8 @@ import lombok.NoArgsConstructor;
  */
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class ReaderNoventGetOutput {
 	private Integer id;
 	private String title;

@@ -3,8 +3,9 @@ package com.primeradiants.oniri.novent.dto;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Simple bean representing the data needed to create a Novent
@@ -13,7 +14,8 @@ import lombok.NoArgsConstructor;
  */
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class AdminNoventPostInput {
 	private String title;
 	private List<String> authors;

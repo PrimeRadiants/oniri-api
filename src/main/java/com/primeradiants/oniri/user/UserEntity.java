@@ -13,8 +13,9 @@ import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Represents a person who uses ONIRI.
@@ -25,7 +26,8 @@ import lombok.NoArgsConstructor;
 @Table(name="user", uniqueConstraints={@UniqueConstraint(columnNames={"id"})})
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class UserEntity 
 {
 	@Id
