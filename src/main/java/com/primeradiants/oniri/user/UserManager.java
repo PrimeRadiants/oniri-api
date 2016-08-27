@@ -26,16 +26,18 @@ public class UserManager {
 	private SessionFactory sessionFactory = HibernateUtil.getSessionAnnotationFactory();
 	private static final String USERNAME = "username"; 
 	private static final String EMAIL = "email"; 
+	private static final String TOKEN = "token"; 
 	
 	/**
 	 * Creates a new UserEntity and persists it into database
 	 * @param username the user name of the new user
 	 * @param email the email of the new user
 	 * @param password the password of the new user (will be hashed)
+	 * @param admin is the created user an admin user
 	 * @return the newly created UserEntity
 	 */
 	public UserEntity createUser(String username, String email, String password, Boolean admin) {
-		UserEntity user = new UserEntity(0, username, email, passwordEncoder.encode(password), new Date(), admin);
+		UserEntity user = new UserEntity(0, username, email, passwordEncoder.encode(password), new Date(), false, admin);
 		
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();
@@ -111,6 +113,22 @@ public class UserManager {
 	}
 	
 	/**
+	 * Update the given user in database
+	 * @param user the user to delete
+	 */
+	public void updateUser(UserEntity user) {
+		if(user == null)
+			return;
+		
+		Session session = sessionFactory.getCurrentSession();
+		session.beginTransaction();
+		
+		session.saveOrUpdate(user);
+		
+		session.getTransaction().commit();
+	}
+	
+	/**
 	 * Delete the given user in database
 	 * @param user the user to delete
 	 */
@@ -122,6 +140,64 @@ public class UserManager {
 		session.beginTransaction();
 		
 		session.delete(user);
+		
+		session.getTransaction().commit();
+	}
+	
+	/**
+	 * Persists a new EmailValidationToken into database.
+	 * @param user the user entity
+	 * @param token the token string
+	 * @return the created EmailValidationTokenEntity object.
+	 */
+	public EmailValidationTokenEntity createEmailValidationTokenByToken(UserEntity user, String token) {
+		EmailValidationTokenEntity tokenEntity = new EmailValidationTokenEntity(0, token, user, new Date());
+		
+		Session session = sessionFactory.getCurrentSession();
+		session.beginTransaction();
+		
+		session.save(tokenEntity);
+		
+		session.getTransaction().commit();
+		
+		return tokenEntity;
+	}
+	
+	/**
+	 * Returns the EmailValidationToken of a User based on the token string.
+	 * @param token the token string
+	 * @return the EmailValidationTokenEntity object, or null if the token cannot be found including null token.
+	 */
+	public EmailValidationTokenEntity getEmailValidationTokenByToken(String token) {
+		if(token == null)
+			return null;
+		
+		Session session = sessionFactory.getCurrentSession();
+		session.beginTransaction();
+		
+		Criteria criteria = session
+			    .createCriteria(EmailValidationTokenEntity.class)
+			    .add(Restrictions.eq(TOKEN, token))
+			    .setMaxResults(1);
+		
+		EmailValidationTokenEntity tokenEntity = (EmailValidationTokenEntity) criteria.uniqueResult();
+		session.getTransaction().commit();
+		
+		return tokenEntity;
+	}
+	
+	/**
+	 * Delete the given EmailValidationToken in database
+	 * @param token the token to delete
+	 */
+	public void deleteEmailValidationToken(EmailValidationTokenEntity token) {
+		if(token == null)
+			return;
+		
+		Session session = sessionFactory.getCurrentSession();
+		session.beginTransaction();
+		
+		session.delete(token);
 		
 		session.getTransaction().commit();
 	}

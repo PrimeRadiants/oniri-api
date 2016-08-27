@@ -60,7 +60,7 @@ public class AllSignUpRestControllerTest {
     private static final String INVALID_PASSWORD_TOO_SHORT = "A1a";
     private static final String INVALID_PASSWORD_WITH_SPACE = "ABCDa FG1";
     
-    private static final String VALID_EMAIL = "georges.biaux@prime-radiants.com";
+    private static final String VALID_EMAIL = "test@prime-radiants.com";
     private static final String INVALID_EMAIL_MISSING_AT = "georges.biauxprime-radiants.com";
     private static final String INVALID_EMAIL_MISSING_DOMAIN = "georges.biaux@.com";
     private static final String INVALID_EMAIL_MISSING_EXT = "georges.biaux@prime-radiantscom";
@@ -70,11 +70,12 @@ public class AllSignUpRestControllerTest {
     
     @Before
     public void initEachTest() {
+    	UserTestUtil.cleanEmailValidationTokenTable();
     	NoventTestUtil.cleanUserNoventTable();
     	UserTestUtil.cleanUserTable();
     	NoventTestUtil.cleanNoventTable();
 	   	
-	   	UserTestUtil.insertUserInDatabase(UserTestData.USER_USERNAME, UserTestData.USER_EMAIL, UserTestData.USER_PASSWORD, false);
+	   	UserTestUtil.insertUserInDatabase(UserTestData.USER_USERNAME, UserTestData.USER_EMAIL, UserTestData.USER_PASSWORD, true, false);
     	
         this.mockMvc =  MockMvcBuilders
         		.webAppContextSetup(this.webApplicationContext)
@@ -101,7 +102,7 @@ public class AllSignUpRestControllerTest {
     }
 
     @Test
-    public void SignUpReturnsOkWithValidArguments() throws Exception {    	
+    public void SignUpReturnsOkWithValidArguments() throws Exception { 
     	ResultMatcher ok = MockMvcResultMatchers.status().isOk();
         
         ResultActions result = sendSignUpRequest(VALID_USERNAME, VALID_PASSWORD, VALID_EMAIL);
@@ -109,7 +110,7 @@ public class AllSignUpRestControllerTest {
     }
     
     @Test
-    public void SignUpAndCreateUserInDatabase() throws Exception {    	
+    public void SignUpCreatesDesabledUserInDatabase() throws Exception {  
         sendSignUpRequest(VALID_USERNAME, VALID_PASSWORD, VALID_EMAIL);
         
         SessionFactory sessionFactory = HibernateUtil.getSessionAnnotationFactory();
@@ -126,6 +127,8 @@ public class AllSignUpRestControllerTest {
     	session.close();
     	
 		Assert.assertNotNull(user);
+		Assert.assertFalse(user.getEnabled());
+		
     }
     
     @Test

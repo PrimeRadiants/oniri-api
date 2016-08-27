@@ -18,8 +18,9 @@ import javax.persistence.UniqueConstraint;
 import com.primeradiants.oniri.user.UserEntity;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Represents the link between a novent and a user library
@@ -30,7 +31,8 @@ import lombok.NoArgsConstructor;
 @Table(name="user_novent", uniqueConstraints={@UniqueConstraint(columnNames={"id"})})
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class UserNoventEntity {
 
 	@Id

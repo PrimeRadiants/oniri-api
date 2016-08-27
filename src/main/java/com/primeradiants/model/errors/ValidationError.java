@@ -1,17 +1,19 @@
 package com.primeradiants.model.errors;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
- * Simple bean for holding a field reference and an error key as well as some optional parameters.
+ * Simple bean for holding a field reference and an error key.
  * @author Shanira
  * @since 0.1.0
  */
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 public class ValidationError {
 	private String field;
 	private String error;

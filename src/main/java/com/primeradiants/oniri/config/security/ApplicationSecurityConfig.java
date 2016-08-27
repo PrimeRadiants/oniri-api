@@ -60,7 +60,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 					.antMatchers("/rest/**").authenticated()
 					.antMatchers("/servlet/**").authenticated()
 					.antMatchers("/admin/**").hasAuthority("admin")
-					.antMatchers("/signUp").permitAll()
+					.antMatchers("/signUp/**").permitAll()
 					.and()
 				.httpBasic();
 		}

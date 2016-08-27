@@ -1,4 +1,4 @@
-package com.primeradiants.oniri.servlet;
+package com.primeradiants.oniri.novent;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,9 +20,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.primeradiants.oniri.novent.NoventEntity;
-import com.primeradiants.oniri.novent.NoventManager;
 import com.primeradiants.oniri.user.UserEntity;
 import com.primeradiants.oniri.user.UserManager;
 
@@ -33,7 +32,7 @@ import com.primeradiants.oniri.user.UserManager;
  */
 @Controller
 @RequestMapping("/servlet")
-public class NoventServlet {
+public class ReaderNoventServlet {
 	
 	@Autowired ServletContext context;
 	@Autowired private NoventManager noventManager;
@@ -52,10 +51,10 @@ public class NoventServlet {
 	/**
 	 * Get the requested novent cover image
 	 * @param id the id of the novent
-	 * @param request
-	 * @param response
+	 * @param request the http request
+	 * @param response the http response
 	 */
-	@RequestMapping("/novent/cover/{id}")
+	@RequestMapping(value = "/novent/cover/{id}", method = RequestMethod.GET)
 	public void getNoventCover(@PathVariable(ID) Integer id, HttpServletRequest request, HttpServletResponse response) {
 		NoventEntity novent = noventManager.getNovent(id);
 		
@@ -91,10 +90,10 @@ public class NoventServlet {
 	 /**
 	  * Get a file in requested novent archive
 	  * @param id the id of the novent
-	  * @param request
-	  * @param response
+	  * @param request the http request
+	  * @param response the http response
 	  */
-	@RequestMapping("/novent/{id}/**")
+	@RequestMapping(value = "/novent/{id}/**", method = RequestMethod.GET)
 	public void getNoventFile(@PathVariable(ID) Integer id, HttpServletRequest request, HttpServletResponse response) {
 		NoventEntity novent = noventManager.getNovent(id);
 		

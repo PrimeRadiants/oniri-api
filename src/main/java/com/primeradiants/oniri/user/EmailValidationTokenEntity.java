@@ -4,9 +4,12 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -18,39 +21,31 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Represents a person who uses ONIRI.
+ * Represents a email validation token attached to a ONIRI user.
  * @author Shanira
- * @since 0.1.0
+ * @since 0.1.1
  */
 @Entity
-@Table(name="user", uniqueConstraints={@UniqueConstraint(columnNames={"id"})})
+@Table(name="emailvalidationtoken", uniqueConstraints={@UniqueConstraint(columnNames={"id"})})
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class UserEntity 
-{
+public class EmailValidationTokenEntity {
+
 	@Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="id", nullable=false, unique=true, length=11)
     private int id;
 	
-	@Column(nullable=false, unique=true, length=35)
-	private String username;
-	
 	@Column(nullable=false, unique=true, length=255)
-	private String email;
+	private String token;
 	
-	@Column(nullable=false)
-	private String password;
+	@ManyToOne(fetch = FetchType.EAGER) 
+    @JoinColumn(nullable=false, updatable=false)
+	private UserEntity user;
 	
 	@Column
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date created;
-	
-	@Column
-	private Boolean enabled;
-	
-	@Column
-	private Boolean admin;
 }

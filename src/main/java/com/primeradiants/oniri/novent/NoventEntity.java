@@ -18,8 +18,9 @@ import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Wraps the useful data of a Novent.
@@ -30,7 +31,8 @@ import lombok.NoArgsConstructor;
 @Table(name="novent", uniqueConstraints={@UniqueConstraint(columnNames={"id"})})
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class NoventEntity {
 
 	@Id
