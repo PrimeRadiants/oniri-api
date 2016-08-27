@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.primeradiants.oniri.novent.ReaderNoventRestController.NoventListResponse;
-import com.primeradiants.oniri.novent.ReaderNoventRestController.NoventResponse;
+import com.primeradiants.oniri.novent.dto.ReaderNoventGetOutput;
+import com.primeradiants.oniri.novent.dto.ReaderNoventListGetOutput;
 import com.primeradiants.oniri.user.UserEntity;
 import com.primeradiants.oniri.user.UserManager;
 
@@ -28,30 +28,7 @@ public class ReaderLibraryRestController {
 
 	@Autowired private UserManager userManager;
 	@Autowired private NoventManager noventManager;
-	
-	/**
-	 * @api {get} /rest/api/library/list Request list of novents in current user library
-	 * @apiName getCurrentUserLibraryNoventList
-	 * @apiGroup Library
-	 * @apiVersion 0.1.0
-	 * 
-	 * @apiSuccess {Object[]} 	novents 				List of novent in current user library.
-	 * @apiSuccess {Number} 	novents.id 				Id of the novent.
-	 * @apiSuccess {String} 	novents.title 			Novent title.
-	 * @apiSuccess {String[]} 	novents.authors 		List of the authors of the novent.
-	 * @apiSuccess {Date} 		novents.publication 	Novent publication date.
-	 * 
-	 * @apiSuccessExample Success-Response:
-	 *     HTTP/1.1 200 OK
-	 *     {
-	 *     	 "novents": [{
-	 *       	"id": 1,
-	 *       	"title": "Novent title",
-	 *       	"authors": ["George Abitbol"],
-	 *       	"publication": 1468237452
-	 *       }]
-	 *     }
-	 */
+
 	/**
 	 * Returns the list of all the current user novents
 	 * @return a List of {@link com.primeradiants.oniri.novent.ReaderNoventRestController.NoventResponse}
@@ -62,11 +39,11 @@ public class ReaderLibraryRestController {
 		UserEntity user = userManager.getUser(currentUser.getUsername());
 		
 		List<NoventEntity> novents = noventManager.getAllUserNovents(user);
-		List<NoventResponse> response = new ArrayList<NoventResponse>();
+		List<ReaderNoventGetOutput> response = new ArrayList<ReaderNoventGetOutput>();
 		
 		for(NoventEntity novent : novents)
-			response.add(new NoventResponse(novent.getId(), novent.getTitle(), novent.getAuthors(), new Date(novent.getPublication().getTime()), true));
+			response.add(new ReaderNoventGetOutput(novent.getId(), novent.getTitle(), novent.getAuthors(), new Date(novent.getPublication().getTime()), true));
 		
-		return ResponseEntity.ok(new NoventListResponse(response));
+		return ResponseEntity.ok(new ReaderNoventListGetOutput(response));
 	}
 }

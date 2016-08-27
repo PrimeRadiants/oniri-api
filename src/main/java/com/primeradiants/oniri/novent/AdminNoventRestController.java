@@ -18,10 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.primeradiants.model.errors.ValidationError;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.primeradiants.oniri.novent.dto.AdminNoventPostInput;
+import com.primeradiants.oniri.novent.dto.AdminNoventPostOutput;
 
 /**
  * REST endpoints to administrate ONIRI novents
@@ -42,8 +40,16 @@ public class AdminNoventRestController {
 	
 	private final static String TMP_FOLDER = "/tmp/primeradiants/oniri-data/";
 
+	/**
+	 * Allow an admin user to add a novent to Oniri
+	 * @param cover Cover file of the novent
+	 * @param novent Novent file
+	 * @param input Input object containing novent data
+	 * @return a {@link com.primeradiants.oniri.novent.AdminNoventRestController.AdminNoventPostOutput.NoventPostOutput} object,
+	 * 			or a list of {@link com.primeradiants.model.errors.ValidationError} in case of invalid inputs
+	 */
 	@RequestMapping(value = "/novent", method = RequestMethod.POST)
-	public ResponseEntity<?> addNovent(@RequestParam MultipartFile cover, @RequestParam MultipartFile novent, @RequestBody NoventPostInput input) 
+	public ResponseEntity<?> addNovent(@RequestParam MultipartFile cover, @RequestParam MultipartFile novent, @RequestBody AdminNoventPostInput input) 
 	{
 		final Collection<ValidationError> errors = new ArrayList<ValidationError>();
 		
@@ -61,7 +67,7 @@ public class AdminNoventRestController {
 		try {
 			noventEntity = noventManager.createNovent(title, authors, input.getDescription(), coverFile, noventFile);
 			
-			return ResponseEntity.ok(new NoventPostOutput(noventEntity.getId()));
+			return ResponseEntity.ok(new AdminNoventPostOutput(noventEntity.getId()));
 		} catch (IOException e) {
 			e.printStackTrace();
 			errors.add(new ValidationError("", "Internal Error, try again or contact your system administrator"));
@@ -69,6 +75,11 @@ public class AdminNoventRestController {
 		}
 	}
 	
+	/**
+	 * Allow a user to delete an existing novent
+	 * @param id the id of the novent
+	 * @return a list of {@link com.primeradiants.model.errors.ValidationError} in case of invalid inputs
+	 */
 	@RequestMapping(value = "/novent/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<?> getNovents(@PathVariable(ID) Integer id) 
 	{
@@ -151,31 +162,5 @@ public class AdminNoventRestController {
 			errors.add(new ValidationError(ID, "Unknown novent with id " + id));
 		
 		return novent;
-	}
-
-	/**
-	 * Simple bean representing the data needed to create a Novent
-	 * @author Shanira
-	 * @since 0.1.1
-	 */
-	@AllArgsConstructor
-	@NoArgsConstructor
-	@Data
-	public static class NoventPostInput {
-		private String title;
-		private List<String> authors;
-		private String description;
-	}
-	
-	/**
-	 * Simple bean representing the data returned when creating a novent
-	 * @author Shanira
-	 * @since 0.1.1
-	 */
-	@AllArgsConstructor
-	@NoArgsConstructor
-	@Data
-	public static class NoventPostOutput {
-		private int id;
 	}
 }

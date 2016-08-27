@@ -2,7 +2,6 @@ package com.primeradiants.oniri.novent;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +15,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.primeradiants.model.errors.ValidationError;
+import com.primeradiants.oniri.novent.dto.ReaderNoventDetailsGetOutput;
+import com.primeradiants.oniri.novent.dto.ReaderNoventGetOutput;
+import com.primeradiants.oniri.novent.dto.ReaderNoventListGetOutput;
 import com.primeradiants.oniri.user.UserEntity;
 import com.primeradiants.oniri.user.UserManager;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * REST endpoints to deal with novents
@@ -38,29 +36,6 @@ public class ReaderNoventRestController {
 	private static final String ID = "id";
 	
 	/**
-	 * @api {get} /rest/api/novent/list Request list of novents in store
-	 * @apiName getStoreNoventList
-	 * @apiGroup Novent
-	 * @apiVersion 0.1.0
-	 * 
-	 * @apiSuccess {Object[]} 	novents 				List of novent in current user library.
-	 * @apiSuccess {Number} 	novents.id 				Id of the novent.
-	 * @apiSuccess {String} 	novents.title 			Novent title.
-	 * @apiSuccess {String[]} 	novents.authors 		List of the authors of the novent.
-	 * @apiSuccess {Date} 		novents.publication 	Novent publication date.
-	 * 
-	 * @apiSuccessExample Success-Response:
-	 *     HTTP/1.1 200 OK
-	 *     {
-	 *     	 "novents": [{
-	 *       	"id": 1,
-	 *       	"title": "Novent title",
-	 *       	"authors": ["George Abitbol"],
-	 *       	"publication": 1468237452
-	 *       }]
-	 *     }
-	 */
-	/**
 	 * Returns the list of all the novents in store
 	 * @return a List of {@link com.primeradiants.oniri.novent.ReaderNoventRestController.NoventResponse}.
 	 */
@@ -72,49 +47,14 @@ public class ReaderNoventRestController {
 		List<NoventEntity> novents = noventManager.getAllNovents();
 		List<NoventEntity> userNovents = noventManager.getAllUserNovents(user);
 		
-		List<NoventResponse> response = new ArrayList<NoventResponse>();
+		List<ReaderNoventGetOutput> response = new ArrayList<ReaderNoventGetOutput>();
 		
 		for(NoventEntity novent : novents)
-			response.add(new NoventResponse(novent.getId(), novent.getTitle(), novent.getAuthors(), novent.getPublication(), userNovents.contains(novent)));
+			response.add(new ReaderNoventGetOutput(novent.getId(), novent.getTitle(), novent.getAuthors(), novent.getPublication(), userNovents.contains(novent)));
 		
-		return ResponseEntity.ok(new NoventListResponse(response));
+		return ResponseEntity.ok(new ReaderNoventListGetOutput(response));
 	}
 	
-	/**
-	 * @api {get} /rest/api/novent/:id Request the data of a novent by its unique ID
-	 * @apiName getStoreNoventList
-	 * @apiGroup Novent
-	 * @apiVersion 0.1.0
-	 * 
-	 * @apiParam {Number} id Novent unique ID.
-	 * 
-	 * @apiSuccess {Number} 	id 				Id of the novent.
-	 * @apiSuccess {String} 	title 			Novent title.
-	 * @apiSuccess {String} 	description		Novent description.
-	 * @apiSuccess {String[]} 	authors 		List of the authors of the novent.
-	 * @apiSuccess {Date} 		publication 	Novent publication date.
-	 * 
-	 * @apiSuccessExample Success-Response:
-	 *     HTTP/1.1 200 OK
-	 *     {
-	 *       "id": 1,
-	 *       "title": "Novent title",
-	 *       "description": "Novent description",
-	 *       "authors": ["George Abitbol"],
-	 *       "publication": 1468237452
-	 *     }
-	 * 
-	 * @apiError {Object[]} response
-	 * @apiError {String} response.field Field where lies the input validation error
-	 * @apiError {String} response.error Error description
-	 * 
-	 * @apiErrorExample {json} Error-Response:
-	 *     HTTP/1.1 400 Bad Request
-	 *     [{
-	 *     	"field": "id"
-	 *       "error": "Unknown novent with id 1"
-	 *     }]
-	 */
 	/**
 	 * Retrieves a novent by its id
 	 * @param id the id of the novent
@@ -135,33 +75,11 @@ public class ReaderNoventRestController {
             return new ResponseEntity<Collection<ValidationError>>(errors, HttpStatus.BAD_REQUEST);
         }
 		
-		NoventDetailedResponse response = new NoventDetailedResponse(novent.getId(), novent.getTitle(), novent.getDescription(), novent.getAuthors(), novent.getPublication(), noventManager.doesUserOwnNovent(user, novent));
+		ReaderNoventDetailsGetOutput response = new ReaderNoventDetailsGetOutput(novent.getId(), novent.getTitle(), novent.getDescription(), novent.getAuthors(), novent.getPublication(), noventManager.doesUserOwnNovent(user, novent));
 		
 		return ResponseEntity.ok(response);
 	}
 	
-	/**
-	 * * @api {get} /rest/api/novent/:id Purchase a novent for the current user
-	 * @apiName purchaseNovent
-	 * @apiGroup Novent
-	 * @apiVersion 0.1.0
-	 * 
-	 * @apiParam {Number} id Novent unique ID.
-	 * 
-	 * @apiSuccessExample {json} Success-Response:
-	 *     HTTP/1.1 200 OK
-	 * 
-	 * @apiError {Object[]} response
-	 * @apiError {String} response.field Field where lies the input validation error
-	 * @apiError {String} response.error Error description
-	 * 
-	 * @apiErrorExample {json} Error-Response:
-	 *     HTTP/1.1 400 Bad Request
-	 *     [{
-	 *     	"field": "id"
-	 *       "error": "Unknown novent with id 1"
-	 *     }]
-	 */
 	/**
 	 * Create an own link between a user and a novent
 	 * @param id the id of the novent
@@ -195,50 +113,5 @@ public class ReaderNoventRestController {
 			errors.add(new ValidationError(ID, "Unknown novent with id " + id));
 		
 		return novent;
-	}
-	
-	/**
-	 * Simple bean representing a list of novents
-	 * @author Shanira
-	 * @since 0.1.0
-	 */
-	@AllArgsConstructor
-	@NoArgsConstructor
-	@Data
-	public static class NoventListResponse {
-		private List<NoventResponse> novents;
-	}
-	
-	/**
-	 * Simple bean representing a novent
-	 * @author Shanira
-	 * @since 0.1.0
-	 */
-	@AllArgsConstructor
-	@NoArgsConstructor
-	@Data
-	public static class NoventResponse {
-		private Integer id;
-		private String title;
-		private List<String> authors;
-		private Date publication;
-		private boolean userOwn;
-	}
-	
-	/**
-	 * Simple bean representing a novent with all details
-	 * @author Shanira
-	 * @since 0.1.0
-	 */
-	@AllArgsConstructor
-	@NoArgsConstructor
-	@Data
-	public static class NoventDetailedResponse {
-		private Integer id;
-		private String title;
-		private String description;
-		private List<String> authors;
-		private Date publication;
-		private boolean userOwn;
 	}
 }

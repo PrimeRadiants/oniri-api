@@ -26,12 +26,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.primeradiants.model.errors.ValidationError;
+import com.primeradiants.oniri.user.dto.AllSignUpPostInput;
+import com.primeradiants.oniri.user.dto.ReaderUserGetOutput;
 
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * REST endpoint to allow user to sign up to Oniri
@@ -54,28 +53,6 @@ public class AllSignUpRestController {
 	private static final String UPPERCASE_REGEX = ".*[A-Z].*";
 	
 	/**
-	 * @api {post} /SignUp Create a new user
-	 * @apiName signUp
-	 * @apiGroup SignUp
-	 * @apiVersion 0.1.0
-	 * 
-	 * @apiParam {String} username      User username.
-	 * @apiParam {String} email			User email.
-	 * @apiParam {String} password      User password.
-	 * 
-	 * @apiSuccess {String} username    User username.
-	 * @apiSuccess {String} email		User email.
-	 * @apiSuccess {Date} 	created     User creation date.
-	 * 
-	 * @apiSuccessExample Success-Response:
-	 *     HTTP/1.1 200 OK
-	 *     {
-	 *       "username": "gabitbol",
-	 *       "email": "george.abitbol@prime-radiants.com",
-	 *       "created": 1468237452
-	 *     }
-	 */
-	/**
 	 * Allow a user to create an account on Oniri
 	 * 
 	 * @param input Object representing sign up data
@@ -83,7 +60,7 @@ public class AllSignUpRestController {
 	 * @since 0.1.0
 	 */
 	@RequestMapping(value = "/signUp", method = RequestMethod.POST)
-	public ResponseEntity<?> signUp(@RequestBody SignUpInput input, HttpServletRequest request) {
+	public ResponseEntity<?> signUp(@RequestBody AllSignUpPostInput input, HttpServletRequest request) {
 		final Collection<ValidationError> errors = new ArrayList<ValidationError>();
 		
 		String username = validateUsername(input.getUsername(), errors);
@@ -114,7 +91,7 @@ public class AllSignUpRestController {
 				
 			mailSender.send(validationEmail);
 			
-			return ResponseEntity.ok(new ReaderUserRestController.UserResponse(user.getUsername(), user.getEmail(), user.getCreated()));
+			return ResponseEntity.ok(new ReaderUserGetOutput(user.getUsername(), user.getEmail(), user.getCreated()));
 		} catch (IOException | TemplateException | MessagingException e) {
 			e.printStackTrace();
 			errors.add(new ValidationError("", "Internal Error, try again or contact your system administrator"));
@@ -122,6 +99,12 @@ public class AllSignUpRestController {
 		}
 	}
 	
+	/**
+	 * Allow a user to activate his account by providing the valid token
+	 * @param token the email verification token
+	 * @return ok response
+	 * @since 0.1.1
+	 */
 	@RequestMapping(value = "/signUp/{token}", method = RequestMethod.GET)
 	public ResponseEntity<?> signUp(@PathVariable String token) {
 		final Collection<ValidationError> errors = new ArrayList<ValidationError>();
@@ -253,19 +236,5 @@ public class AllSignUpRestController {
 			errors.add(new ValidationError(TOKEN, "Invalid validation token"));
 		
 		return tokenEntity;
-	}
-	
-	/**
-	 * Simple bean representing the data needed to sign up to Oniri
-	 * @author Shanira
-	 * @since 0.1.0
-	 */
-	@AllArgsConstructor
-	@NoArgsConstructor
-	@Data
-	public static class SignUpInput {
-		private String username;
-		private String email;
-		private String password;
 	}
 }

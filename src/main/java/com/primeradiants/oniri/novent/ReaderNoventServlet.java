@@ -20,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.primeradiants.oniri.user.UserEntity;
 import com.primeradiants.oniri.user.UserManager;
@@ -53,7 +54,7 @@ public class ReaderNoventServlet {
 	 * @param request
 	 * @param response
 	 */
-	@RequestMapping("/novent/cover/{id}")
+	@RequestMapping(value = "/novent/cover/{id}", method = RequestMethod.GET)
 	public void getNoventCover(@PathVariable(ID) Integer id, HttpServletRequest request, HttpServletResponse response) {
 		NoventEntity novent = noventManager.getNovent(id);
 		
@@ -92,7 +93,7 @@ public class ReaderNoventServlet {
 	  * @param request
 	  * @param response
 	  */
-	@RequestMapping("/novent/{id}/**")
+	@RequestMapping(value = "/novent/{id}/**", method = RequestMethod.GET)
 	public void getNoventFile(@PathVariable(ID) Integer id, HttpServletRequest request, HttpServletResponse response) {
 		NoventEntity novent = noventManager.getNovent(id);
 		

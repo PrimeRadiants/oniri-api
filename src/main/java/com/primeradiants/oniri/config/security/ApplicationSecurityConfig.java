@@ -52,7 +52,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 			http
 				//TODO : determine if keeping this protection or not
 				.requiresChannel()
-					.anyRequest().requiresSecure()
+					//.anyRequest().requiresSecure()
 					.and()
 				.csrf()
 					.disable()

@@ -15,11 +15,18 @@ import org.springframework.stereotype.Service;
 import com.primeradiants.oniri.user.UserEntity;
 import com.primeradiants.oniri.user.UserManager;
 
+/**
+ * Custom implementation of the UserDetailsService
+ * Used to retreive user from database using hibernate entities
+ * @author Shanira
+ * @since 0.1.0
+ */
 @Service("hibernateUserDetailsService")
 public class HibernateUserDetailsService implements UserDetailsService {
 
 	@Autowired private UserManager userManager;
 	
+
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		UserEntity user = userManager.getUser(username);
