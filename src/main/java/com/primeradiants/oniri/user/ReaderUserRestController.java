@@ -1,4 +1,4 @@
-package com.primeradiants.oniri.rest;
+package com.primeradiants.oniri.user;
 
 import java.util.Date;
 
@@ -9,9 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.primeradiants.oniri.user.UserEntity;
-import com.primeradiants.oniri.user.UserManager;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,7 +21,7 @@ import lombok.NoArgsConstructor;
  */
 @RestController
 @RequestMapping("/rest/api")
-public class UserResource {
+public class ReaderUserRestController {
 
 	@Autowired private UserManager userManager;
 	
@@ -48,7 +45,7 @@ public class UserResource {
 	 */
 	/**
 	 * Retrieves the current logged in user.
-	 * @return a {@link com.primeradiants.oniri.rest.UserResource.UserResponse}.
+	 * @return a {@link com.primeradiants.oniri.user.ReaderUserRestController.UserResponse}.
 	 */
 	@RequestMapping(value = "/user", method = RequestMethod.GET)
 	public ResponseEntity<?> getCurrentUser() 

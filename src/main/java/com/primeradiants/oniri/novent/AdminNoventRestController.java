@@ -1,4 +1,4 @@
-package com.primeradiants.oniri.admin;
+package com.primeradiants.oniri.novent;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,9 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.primeradiants.model.errors.ValidationError;
-import com.primeradiants.oniri.novent.NoventEntity;
-import com.primeradiants.oniri.novent.NoventManager;
-import com.primeradiants.oniri.novent.NoventUtil;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,7 +30,7 @@ import lombok.NoArgsConstructor;
  */
 @RestController
 @RequestMapping("/admin/api")
-public class NoventAdminResource {
+public class AdminNoventRestController {
 
 	@Autowired private NoventManager noventManager;
 	

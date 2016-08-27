@@ -1,4 +1,4 @@
-package com.primeradiants.oniri.admin;
+package com.primeradiants.oniri.user;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.primeradiants.model.errors.ValidationError;
-import com.primeradiants.oniri.rest.UserResource.UserResponse;
-import com.primeradiants.oniri.user.UserEntity;
-import com.primeradiants.oniri.user.UserManager;
+import com.primeradiants.oniri.user.ReaderUserRestController.UserResponse;
 
 /**
  * REST endpoints to administrate ONIRI users
@@ -24,7 +22,7 @@ import com.primeradiants.oniri.user.UserManager;
  */
 @RestController
 @RequestMapping("/admin/api")
-public class UserAdminResource {
+public class AdminUserRestController {
 
 	@Autowired private UserManager userManager;
 	
@@ -50,7 +48,7 @@ public class UserAdminResource {
 	 */
 	/**
 	 * Retreive the list of all Oniri users
-	 * @return a list of {@link com.primeradiants.oniri.rest.UserResource.UserResponse}.
+	 * @return a list of {@link com.primeradiants.oniri.user.ReaderUserRestController.UserResponse}.
 	 */
 	@RequestMapping(value = "/user/list", method = RequestMethod.GET)
 	public ResponseEntity<?> getUserList() 
@@ -98,7 +96,7 @@ public class UserAdminResource {
 	/**
 	 * Retrieve a user by its user name
 	 * @param username the user name of the user
-	 * @return a {@link com.primeradiants.oniri.rest.UserResource.UserResponse} if user exists, 
+	 * @return a {@link com.primeradiants.oniri.user.ReaderUserRestController.UserResponse} if user exists, 
 	 * 			else a Collection of {@link com.primeradiants.model.errors.ValidationError}
 	 */
 	@RequestMapping(value = "/user/{username}", method = RequestMethod.GET)

@@ -1,4 +1,4 @@
-package com.primeradiants.oniri.servlet;
+package com.primeradiants.oniri.novent;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,8 +21,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.primeradiants.oniri.novent.NoventEntity;
-import com.primeradiants.oniri.novent.NoventManager;
 import com.primeradiants.oniri.user.UserEntity;
 import com.primeradiants.oniri.user.UserManager;
 
@@ -33,7 +31,7 @@ import com.primeradiants.oniri.user.UserManager;
  */
 @Controller
 @RequestMapping("/servlet")
-public class NoventServlet {
+public class ReaderNoventServlet {
 	
 	@Autowired ServletContext context;
 	@Autowired private NoventManager noventManager;

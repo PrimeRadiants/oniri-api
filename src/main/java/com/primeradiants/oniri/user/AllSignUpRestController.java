@@ -1,4 +1,4 @@
-package com.primeradiants.oniri.rest;
+package com.primeradiants.oniri.user;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,9 +26,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.primeradiants.model.errors.ValidationError;
-import com.primeradiants.oniri.user.EmailValidationTokenEntity;
-import com.primeradiants.oniri.user.UserEntity;
-import com.primeradiants.oniri.user.UserManager;
 
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
@@ -42,7 +39,7 @@ import lombok.NoArgsConstructor;
  * @since 0.1.0
  */
 @RestController
-public class SignUpResource {
+public class AllSignUpRestController {
 
 	@Autowired private UserManager userManager;
 	@Autowired private JavaMailSender mailSender;
@@ -57,7 +54,7 @@ public class SignUpResource {
 	private static final String UPPERCASE_REGEX = ".*[A-Z].*";
 	
 	/**
-	 * @api {get} /rest/api/novent/list Create a new user
+	 * @api {post} /SignUp Create a new user
 	 * @apiName signUp
 	 * @apiGroup SignUp
 	 * @apiVersion 0.1.0
@@ -117,7 +114,7 @@ public class SignUpResource {
 				
 			mailSender.send(validationEmail);
 			
-			return ResponseEntity.ok(new UserResource.UserResponse(user.getUsername(), user.getEmail(), user.getCreated()));
+			return ResponseEntity.ok(new ReaderUserRestController.UserResponse(user.getUsername(), user.getEmail(), user.getCreated()));
 		} catch (IOException | TemplateException | MessagingException e) {
 			e.printStackTrace();
 			errors.add(new ValidationError("", "Internal Error, try again or contact your system administrator"));

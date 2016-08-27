@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Simple bean for holding a field reference and an error key as well as some optional parameters.
+ * Simple bean for holding a field reference and an error key.
  * @author Shanira
  * @since 0.1.0
  */

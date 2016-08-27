@@ -1,4 +1,4 @@
-package com.primeradiants.oniri.rest;
+package com.primeradiants.oniri.novent;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.primeradiants.model.errors.ValidationError;
-import com.primeradiants.oniri.novent.NoventEntity;
-import com.primeradiants.oniri.novent.NoventManager;
 import com.primeradiants.oniri.user.UserEntity;
 import com.primeradiants.oniri.user.UserManager;
 
@@ -32,7 +30,7 @@ import lombok.NoArgsConstructor;
  */
 @RestController
 @RequestMapping("/rest/api")
-public class NoventResource {
+public class ReaderNoventRestController {
 
 	@Autowired private NoventManager noventManager;
 	@Autowired private UserManager userManager;
@@ -64,7 +62,7 @@ public class NoventResource {
 	 */
 	/**
 	 * Returns the list of all the novents in store
-	 * @return a List of {@link com.primeradiants.oniri.rest.NoventResource.NoventResponse}.
+	 * @return a List of {@link com.primeradiants.oniri.novent.ReaderNoventRestController.NoventResponse}.
 	 */
 	@RequestMapping(value = "/novent/list", method = RequestMethod.GET)
 	public ResponseEntity<?> getStoreNoventList() {
@@ -120,7 +118,7 @@ public class NoventResource {
 	/**
 	 * Retrieves a novent by its id
 	 * @param id the id of the novent
-	 * @return a {@link com.primeradiants.oniri.rest.NoventResource.NoventResponse} if novent exists, 
+	 * @return a {@link com.primeradiants.oniri.novent.ReaderNoventRestController.NoventResponse} if novent exists, 
 	 * 			else a Collection of {@link com.primeradiants.model.errors.ValidationError}.
 	 */
 	@RequestMapping(value = "/novent/{id}", method = RequestMethod.GET)
@@ -167,7 +165,7 @@ public class NoventResource {
 	/**
 	 * Create an own link between a user and a novent
 	 * @param id the id of the novent
-	 * @return a {@link com.primeradiants.oniri.rest.NoventResource.NoventResponse} if novent exists, 
+	 * @return a {@link com.primeradiants.oniri.novent.ReaderNoventRestController.NoventResponse} if novent exists, 
 	 * 			else a Collection of {@link com.primeradiants.model.errors.ValidationError}.
 	 */
 	@RequestMapping(value = "/novent/{id}", method = RequestMethod.POST)
